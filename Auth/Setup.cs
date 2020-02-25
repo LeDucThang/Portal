@@ -38,6 +38,20 @@ namespace Auth
                 DataContext.Provider.Add(provider);
                 DataContext.SaveChanges();
             }
+
+            Role Admin = DataContext.Role
+                .Where(r => r.Code == "ADMIN")
+                .FirstOrDefault();
+            if (Admin == null)
+            {
+                Admin = new Role
+                {
+                    Code = "ADMIN",
+                };
+                DataContext.Role.Add(Admin);
+                DataContext.SaveChanges();
+            }
+
             ApplicationUser applicationUser = DataContext.ApplicationUser
                 .Where(au => au.Username.ToLower() == "Administrator".ToLower())
                 .FirstOrDefault();
@@ -58,6 +72,20 @@ namespace Auth
                     Username = "Administrator"
                 };
                 DataContext.ApplicationUser.Add(applicationUser);
+                DataContext.SaveChanges();
+            }
+
+            UserRoleMapping userRole = DataContext.UserRoleMapping
+                .Where(ur => ur.RoleId == Admin.Id && ur.ApplicationUserId == applicationUser.Id)
+                .FirstOrDefault();
+            if (userRole == null)
+            {
+                userRole = new UserRoleMapping
+                {
+                    ApplicationUserId = applicationUser.Id,
+                    RoleId = Admin.Id,
+                };
+                DataContext.UserRoleMapping.Add(userRole);
                 DataContext.SaveChanges();
             }
         }

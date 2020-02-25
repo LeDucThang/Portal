@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Auth.Models
+namespace Portal.Models
 {
     public partial class DataContext : DbContext
     {

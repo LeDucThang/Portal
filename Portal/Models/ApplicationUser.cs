@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Auth.Models
+namespace Portal.Models
 {
     public partial class ApplicationUser
     {
