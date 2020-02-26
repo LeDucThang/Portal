@@ -69,3 +69,5 @@ C:\Users\Win 10\Documents\GitHub\Portal\Portal.BE\bin\Debug\netcoreapp3.1\System
 C:\Users\Win 10\Documents\GitHub\Portal\Portal.BE\obj\Debug\netcoreapp3.1\Portal.BE.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\Win 10\Documents\GitHub\Portal\Portal.BE\obj\Debug\netcoreapp3.1\Portal.BE.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Win 10\Documents\GitHub\Portal\Portal.BE\obj\Debug\netcoreapp3.1\EFCorePluralizer.cs
+C:\Users\Win 10\Documents\GitHub\Portal\Portal.BE\bin\Debug\netcoreapp3.1\Resources\EN\UserValidator.json
+C:\Users\Win 10\Documents\GitHub\Portal\Portal.BE\bin\Debug\netcoreapp3.1\Resources\VN\UserValidator.json
