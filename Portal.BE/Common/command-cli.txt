@@ -1,0 +1,1 @@
+dotnet ef dbcontext scaffold  "data source=178.128.52.198;initial catalog=DMS;persist security info=True;user id=sa;password=123456a@;multipleactiveresultsets=True;" Microsoft.EntityFrameworkCore.SqlServer -c DataContext  -o Models -f --no-build --use-database-names --json

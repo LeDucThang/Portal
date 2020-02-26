@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "Portal.FE/1.0.0": {
+        "runtime": {
+          "Portal.FE.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Portal.FE/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

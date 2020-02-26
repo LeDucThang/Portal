@@ -1,0 +1,11 @@
+C:\Users\Win 10\Documents\GitHub\Portal\Portal.FE\bin\Debug\netcoreapp3.1\Portal.FE.exe
+C:\Users\Win 10\Documents\GitHub\Portal\Portal.FE\bin\Debug\netcoreapp3.1\Portal.FE.deps.json
+C:\Users\Win 10\Documents\GitHub\Portal\Portal.FE\bin\Debug\netcoreapp3.1\Portal.FE.runtimeconfig.json
+C:\Users\Win 10\Documents\GitHub\Portal\Portal.FE\bin\Debug\netcoreapp3.1\Portal.FE.runtimeconfig.dev.json
+C:\Users\Win 10\Documents\GitHub\Portal\Portal.FE\bin\Debug\netcoreapp3.1\Portal.FE.dll
+C:\Users\Win 10\Documents\GitHub\Portal\Portal.FE\bin\Debug\netcoreapp3.1\Portal.FE.pdb
+C:\Users\Win 10\Documents\GitHub\Portal\Portal.FE\obj\Debug\netcoreapp3.1\Portal.FE.csprojAssemblyReference.cache
+C:\Users\Win 10\Documents\GitHub\Portal\Portal.FE\obj\Debug\netcoreapp3.1\Portal.FE.AssemblyInfoInputs.cache
+C:\Users\Win 10\Documents\GitHub\Portal\Portal.FE\obj\Debug\netcoreapp3.1\Portal.FE.AssemblyInfo.cs
+C:\Users\Win 10\Documents\GitHub\Portal\Portal.FE\obj\Debug\netcoreapp3.1\Portal.FE.dll
+C:\Users\Win 10\Documents\GitHub\Portal\Portal.FE\obj\Debug\netcoreapp3.1\Portal.FE.pdb
