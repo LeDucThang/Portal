@@ -19,6 +19,7 @@ namespace Auth
             var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
             optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DataContext"));
             DataContext = new DataContext(optionsBuilder.Options);
+            DataContext.Database.Migrate();
             InitEnum();
             Init();
         }
