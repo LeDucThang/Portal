@@ -127,7 +127,7 @@ namespace Common
 
         public void AddError(string className, string Key, Enum Value)
         {
-            Key = Key.ToCamelCase();
+            Key = Char.ToLowerInvariant(Key[0]) + Key.Substring(1);
             if (string.IsNullOrEmpty(_BaseLanguage)) _BaseLanguage = "VN";
             if (Errors == null) Errors = new Dictionary<string, string>();
 

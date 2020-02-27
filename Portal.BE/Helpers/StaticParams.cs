@@ -8,7 +8,5 @@ namespace Helpers
     public static class StaticParams
     {
         public static string SecretKey { get; set; }
-        public static long ExpiredTime { get; set; }
-        public static string AdminPassword { get; set; }
     }
 }
