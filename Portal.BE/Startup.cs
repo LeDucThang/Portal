@@ -16,14 +16,28 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Z.EntityFramework.Extensions;
 
 namespace Portal.BE
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostEnvironment env)
         {
-            Configuration = configuration;
+            LicenseManager.AddLicense("2456;101-FPT", "24313111-f19c-96fd-467f-1f00b5369d33");
+            if (!LicenseManager.ValidateLicense(out string licenseErrorMessage))
+            {
+                throw new Exception(licenseErrorMessage);
+            }
+
+
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(env.ContentRootPath)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+            .AddEnvironmentVariables();
+
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -77,11 +91,6 @@ namespace Portal.BE
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -94,18 +103,24 @@ namespace Portal.BE
                 endpoints.MapControllers();
             });
 
-            app.UseSwagger(c =>
-            {
-                c.RouteTemplate = "api/portal/swagger/{documentname}/swagger.json";
-            });
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
+            if (env.IsDevelopment())
             {
-                c.SwaggerEndpoint("/api/portal/swagger/v1/swagger.json", "Portal API");
-                c.RoutePrefix = "api/portal/swagger";
-            });
+                app.UseSwagger(c =>
+                {
+                    c.RouteTemplate = "api/portal/swagger/{documentname}/swagger.json";
+                });
+
+                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+                // specifying the Swagger JSON endpoint.
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/api/portal/swagger/v1/swagger.json", "Portal API");
+                    c.RoutePrefix = "api/portal/swagger";
+                });
+                app.UseDeveloperExceptionPage();
+            }
         }
     }
 }
