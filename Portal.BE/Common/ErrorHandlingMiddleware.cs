@@ -33,8 +33,6 @@ namespace Common
 
             if (exception is MessageException)
                 code = 420;
-            if (exception is BindException)
-                code = 400;
 
             string result = exception.Message;
             context.Response.ContentType = "application/json";

@@ -39,6 +39,9 @@ namespace Auth
             StaticParams.SecretKey = Configuration["Config:SecretKey"];
             StaticParams.ExpiredTime = long.TryParse(Configuration["Config:ExpiredTime"], out long time) ? time : 0;
             StaticParams.AdminPassword = Configuration["Config:AdminPassword"];
+            StaticParams.GoogleClientId = Configuration["Google:ClientId"];
+            StaticParams.GoogleClientSecret = Configuration["Google:ClientSecret"];
+            StaticParams.GoogleRedirectUri = Configuration["Google:RedirectUri"];
 
             var key = Encoding.ASCII.GetBytes(StaticParams.SecretKey);
 
@@ -105,7 +108,7 @@ namespace Auth
             });
 
 
-            new Setup(Configuration);
+            //new Setup(Configuration);
         }
     }
 }

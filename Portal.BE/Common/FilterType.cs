@@ -343,6 +343,7 @@ namespace Common
             return (sourceValue & destValue) == destValue;
         }
 
+
         public static string ToSql<TEntity>(this IQueryable<TEntity> query) where TEntity : class
         {
             var enumerator = query.Provider.Execute<IEnumerable<TEntity>>(query.Expression).GetEnumerator();
@@ -359,6 +360,7 @@ namespace Common
 
         private static object Private(this object obj, string privateField) => obj?.GetType().GetField(privateField, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(obj);
         private static T Private<T>(this object obj, string privateField) => (T)obj?.GetType().GetField(privateField, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(obj);
+
         public static Expression<Func<TSource, bool>> BuildPredicate<TSource, TKey, TValue>(Expression<Func<TSource, TKey>> propertyName, string comparison, List<TValue> values)
         {
             var micontain = typeof(List<TValue>).GetMethod("Contains");

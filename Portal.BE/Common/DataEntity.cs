@@ -120,6 +120,57 @@ namespace Common
         }
 
         public Dictionary<string, string> Errors { get; private set; }
+        public Dictionary<string, string> AccessRights { get; private set; }
+
+        private Dictionary<string, string> _AccessRightResource;
+        internal Dictionary<string, string> AccessRightResource
+        {
+            get
+            {
+                return _AccessRightResource;
+            }
+            set
+            {
+                _AccessRightResource = value;
+                List<PropertyInfo> PropertyInfoes = this.GetType().GetProperties().ToList();
+                foreach (PropertyInfo PropertyInfo in PropertyInfoes)
+                {
+                    if (PropertyInfo.Name == "Errors" || PropertyInfo.Name == "AccessRights") continue;
+
+                    if (PropertyInfo.PropertyType.IsGenericType && PropertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(List<>))
+                    {
+                        IEnumerable<DataEntity> DataEntities = PropertyInfo.GetValue(this) as IEnumerable<DataEntity>;
+                        if (DataEntities != null)
+                            foreach (DataEntity DataEntity in DataEntities)
+                            {
+                                DataEntity.DataPath = this.DataPath;
+                                DataEntity.AccessRightResource = this._AccessRightResource.Where(ar => ar.Key.StartsWith(DataEntity.DataPath)).ToDictionary(ar => ar.Key, ar => ar.Value);
+                            }
+                    }
+                    if (PropertyInfo.PropertyType.IsSubclassOf(typeof(DataEntity)))
+                    {
+                        DataEntity DataEntity = PropertyInfo.GetValue(this) as DataEntity;
+                        if (DataEntity != null)
+                        {
+                            DataEntity.DataPath = this.DataPath;
+                            DataEntity.AccessRightResource = this._AccessRightResource.Where(ar => ar.Key.StartsWith(DataEntity.DataPath)).ToDictionary(ar => ar.Key, ar => ar.Value);
+                        }
+                    }
+
+
+                    if (AccessRights == null) AccessRights = new Dictionary<string, string>();
+                    string key = this.DataPath + "." + PropertyInfo.Name;
+                    if (AccessRights.ContainsKey(PropertyInfo.Name))
+                    {
+                        AccessRights[PropertyInfo.Name.ToCamelCase()] = AccessRightResource.Where(arr => arr.Key == key).Select(arr => arr.Value).FirstOrDefault();
+                    }
+                    else
+                    {
+                        AccessRights.Add(PropertyInfo.Name.ToCamelCase(), AccessRightResource.Where(arr => arr.Key == key).Select(arr => arr.Value).FirstOrDefault());
+                    }
+                }
+            }
+        }
 
         public DataEntity()
         {
@@ -127,7 +178,6 @@ namespace Common
 
         public void AddError(string className, string Key, Enum Value)
         {
-            Key = Char.ToLowerInvariant(Key[0]) + Key.Substring(1);
             if (string.IsNullOrEmpty(_BaseLanguage)) _BaseLanguage = "VN";
             if (Errors == null) Errors = new Dictionary<string, string>();
 

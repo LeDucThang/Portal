@@ -23,4 +23,10 @@ namespace Common
             OrderType = OrderType.ASC;
         }
     }
+
+    public class AccessRight
+    {
+        public List<string> Actions { get; set; }
+        public List<FilterPermissionDefinition> Filters { get; set; }
+    }
 }

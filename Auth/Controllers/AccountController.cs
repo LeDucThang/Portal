@@ -16,10 +16,10 @@ using Auth.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using System.Net;
 using System.IO;
-using Nancy.Json;
 using Microsoft.AspNetCore.Http;
 using Google.Apis.Auth;
 using Google.Apis.Auth.OAuth2;
+using Newtonsoft.Json;
 
 namespace Auth.Controllers
 {
@@ -28,9 +28,9 @@ namespace Auth.Controllers
         private readonly ILogger<AccountController> _logger;
         private readonly DataContext _context;
 
-        private string UserId = "998310595831-dceeoaikv8ce1qls0v35h1fbd3uskiel.apps.googleusercontent.com";
-        private string client_secret = "7Aur4sJBSIOXWv4gJdlDsu_B";
-        private string redirect_uri = "https://localhost:5001/account/GoogleCallback";
+        private string clientId = StaticParams.GoogleClientId;
+        private string clientSecret = StaticParams.GoogleClientSecret;
+        private string redirectUri = StaticParams.GoogleRedirectUri;
         private string grant_type = "authorization_code";
         //private string grant_type = "refresh_token";
 
@@ -46,7 +46,7 @@ namespace Auth.Controllers
             var stateNew = Guid.NewGuid();
             ViewBag.returnlink = returnUrl;
             ViewBag.State = stateNew;
-            ViewBag.GgCallBack = redirect_uri;
+            ViewBag.GgCallBack = redirectUri;
             ViewBag.ReturnUrl = returnUrl;
             HttpContext.Session.SetString(stateNew.ToString(), "State");
             return View();
@@ -143,26 +143,26 @@ namespace Auth.Controllers
         {
             if (code != null)
             {
-                string gurl = "code=" + code + "&client_id=" + UserId +
-                         "&client_secret=" + client_secret + "&redirect_uri=" + redirect_uri + "&grant_type=" + grant_type;
-                var u = await POSTResultAsync(gurl);
-                if (u != null)
+                string gurl = "code=" + code + "&client_id=" + clientId +
+                         "&client_secret=" + clientSecret + "&redirect_uri=" + redirectUri + "&grant_type=" + grant_type;
+                var user = await POSTResultAsync(gurl);
+                if (user != null)
                 {
                     //Check có tồn tại trong danh sách user hay không? 
                     ApplicationUser applicationUser = _context.ApplicationUser
-            .Where(au => au.Username.ToLower() == u.Username)
-            .FirstOrDefault();
+                        .Where(au => au.Username.ToLower() == user.Username)
+                        .FirstOrDefault();
                     if (applicationUser != null)
                     {
-                        string token = CreateToken(u.Id, u.Username);
+                        string token = CreateToken(user.Id, user.Username);
                         Response.Cookies.Append("Token", token);
                         return Redirect("/");
                     }
-                    return Redirect("/error");
+                    return RedirectToAction("Login");
                 }
             }
 
-            return Redirect("/");
+            return RedirectToAction("Login");
         }
 
 
@@ -200,20 +200,15 @@ namespace Auth.Controllers
 
 
                 }
-                JavaScriptSerializer js = new JavaScriptSerializer();
-                gLoginInfo gli = js.Deserialize<gLoginInfo>(googleAuth);
+
+                gLoginInfo gli = JsonConvert.DeserializeObject<gLoginInfo>(googleAuth);
 
                 // lấy thông tin của gmail
                 GoogleJsonWebSignature.Payload validPayload = await GoogleJsonWebSignature.ValidateAsync(gli.id_token);
-                ApplicationUser u = new ApplicationUser();
-                u.Username = validPayload.Email;
-                u.DisplayName = validPayload.Name;
-
-                //string[] tokenArray = gli.id_token.Split(new Char[] { '.' }); 
-                //JavaScriptSerializer js2 = new JavaScriptSerializer();
-                //gLoginClaims glc2 = js2.Deserialize<gLoginClaims>(base64Decode(tokenArray[1]));
-
-                return u;
+                ApplicationUser user = new ApplicationUser();
+                user.Username = validPayload.Email;
+                user.DisplayName = validPayload.Name;
+                return user;
             }
             catch (Exception ex)
             {
@@ -221,51 +216,15 @@ namespace Auth.Controllers
             }
             return null;
         }
-
-
-        public string base64Decode(string data)
-        {
-            //add padding with '=' to string to accommodate C# Base64 requirements
-            int strlen = data.Length + (4 - (data.Length % 4));
-            char pad = '=';
-            string datapad;
-
-            if (strlen == (data.Length + 4))
-            {
-                datapad = data;
-            }
-            else
-            {
-                datapad = data.PadRight(strlen, pad);
-            }
-
-            try
-            {
-                System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
-                System.Text.Decoder utf8Decode = encoder.GetDecoder();
-
-                // create byte array to store Base64 string
-                byte[] todecode_byte = Convert.FromBase64String(datapad);
-                int charCount = utf8Decode.GetCharCount(todecode_byte, 0, todecode_byte.Length);
-                char[] decoded_char = new char[charCount];
-                utf8Decode.GetChars(todecode_byte, 0, todecode_byte.Length, decoded_char, 0);
-                string result = new String(decoded_char);
-                return result;
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Error in base64Decode: " + e.Message);
-            }
-        }
     }
-}
-public class gLoginClaims
-{
-    public string aud, iss, email_verified, at_hash, azp, email, sub;
-    public int exp, iat;
-}
-public class gLoginInfo
-{
-    public string access_token, token_type, id_token;
-    public int expires_in;
+    public class gLoginClaims
+    {
+        public string aud, iss, email_verified, at_hash, azp, email, sub;
+        public int exp, iat;
+    }
+    public class gLoginInfo
+    {
+        public string access_token, token_type, id_token;
+        public int expires_in;
+    }
 }
