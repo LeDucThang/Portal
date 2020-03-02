@@ -19,27 +19,48 @@
           href="https://diennuochoangkhoi.com/wp-content/uploads/2019/09/rang-dong.jpg">
     <link href="./login-1_files/css" rel="stylesheet">
 
-    <!-- BEGIN: Vendor CSS-->
-    <link rel="stylesheet" type="text/css" href="./login-1_files/vendors.min.css">
-    <link rel="stylesheet" type="text/css" href="./login-1_files/icheck.css">
-    <link rel="stylesheet" type="text/css" href="./login-1_files/custom.css">
-    <!-- END: Vendor CSS-->
     <!-- BEGIN: Theme CSS-->
-    <link rel="stylesheet" type="text/css" href="./login-1_files/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="./login-1_files/bootstrap-extended.min.css">
-    <link rel="stylesheet" type="text/css" href="./login-1_files/colors.min.css">
-    <link rel="stylesheet" type="text/css" href="./login-1_files/components.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.rawgit.com/Chalarangelo/bootstrap-extend/880420ae663f7c539971ded33411cdecffcc2134/css/bootstrap-extend.min.css" />
     <!-- END: Theme CSS-->
-    <!-- BEGIN: Page CSS-->
-    <link rel="stylesheet" type="text/css" href="./login-1_files/vertical-menu-modern.css">
-    <link rel="stylesheet" type="text/css" href="./login-1_files/palette-gradient.min.css">
-    <link rel="stylesheet" type="text/css" href="./login-1_files/login-register.min.css">
-    <!-- END: Page CSS-->
-    <!-- BEGIN: Custom CSS-->
-    <link rel="stylesheet" type="text/css" href="./login-1_files/style.css">
-    <!-- END: Custom CSS-->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
+        .card-header {
+            background-color: #ffffff;
+        }
+
+        form .form-control {
+            border: 1px solid #cacfe7;
+            color: #3b4781;
+            font-size: 14px;
+        }
+
+        .form-control-position {
+            position: absolute;
+            top: -7px;
+            right: 0;
+            z-index: 2;
+            display: block;
+            width: 2.5rem;
+            height: 2.5rem;
+            line-height: 3.2rem;
+            text-align: center;
+            font-size: 14px;
+            color: gray;
+        }
+
+
+        .has-icon-left .form-control {
+            padding-left: 2.5rem;
+        }
+
+        .has-icon-left .form-control-position {
+            right: auto;
+            left: inherit;
+        }
+
         .checkbox label:after,
         .radio label:after {
             content: '';
@@ -92,6 +113,52 @@
                 transform: scale(1) rotateZ(0deg);
                 opacity: 1;
             }
+
+        .box-shadow-2 {
+            top: 20%;
+            box-shadow: 0 10px 18px 0 rgba(62, 57, 107, .2);
+        }
+
+        .checkbox .cr,
+        .radio .cr {
+            margin-bottom: -4px;
+        }
+
+        .btn-google-plus {
+            background: #c32f10;
+            border-color: #c32f10;
+            color: #ffffff;
+        }
+
+        .btn-login :hover {
+            color: #ffffff;
+            box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-adfs img,
+        .btn-google-plus :hover {
+            box-shadow: unset !important;
+        }
+
+        .btn-adfs {
+            background: #ffffff;
+            border-color: #00aced;
+            color: #ffffff;
+        }
+
+            .btn-adfs img {
+                height: 30px;
+            }
+
+        .line-on-side {
+            border-bottom: 1px solid #dadada;
+            line-height: .1em;
+        }
+
+            .line-on-side span {
+                background: #ffffff;
+                padding: 0 10px;
+            }
     </style>
 
 </head>
@@ -134,18 +201,18 @@
                                     <!-- <p class="card-subtitle line-on-side text-muted text-center font-small-3 mx-2 my-1"><span>OR Using Account
                                     Details</span></p> -->
                                     <div class="card-body">
-                                        <form class="form-horizontal"
-                                              action="https://pixinvent.com/modern-admin-clean-bootstrap-4-dashboard-html-template/html/ltr/vertical-modern-menu-template/index.html"
-                                              novalidate="">
+                                        <form class="form-horizontal" id="frmLogin" name="frmLogin">
                                             <fieldset class="form-group position-relative has-icon-left">
-                                                <input type="text" class="form-control" id="user-name" placeholder="Your Username" required="">
+                                                <input type="text" class="form-control" id="Username" name="Username" placeholder="Your Username" required="" />
+                                                <strong id="UsernameErr" class="error"></strong>
                                                 <div class="form-control-position">
                                                     <i class="fa fa-user-o"></i>
                                                 </div>
                                             </fieldset>
                                             <fieldset class="form-group position-relative has-icon-left">
-                                                <input type="password" class="form-control" id="user-password" placeholder="Enter Password"
-                                                       required="">
+                                                <input type="password" class="form-control" id="Password" name="Password" placeholder="Your Password" required="" />
+                                                <strong id="passwordErr" class="error"></strong>
+                                                <strong id="messageError" class="error"></strong>
                                                 <div class="form-control-position">
                                                     <i class="fa fa-key"></i>
                                                 </div>
@@ -165,19 +232,37 @@
                                                        class="card-link">Forgot Password?</a>
                                                 </div>
                                             </div>
-                                            <button type="submit" class="btn btn-outline-danger btn-block">
+                                            <button type="submit" class="btn btn-outline-danger btn-block" id="submitLogin">
                                                 <i class="fa fa-unlock-alt "></i>
                                                 Login
                                             </button>
                                         </form>
                                     </div>
-                                    <!-- <p class="card-subtitle line-on-side text-muted text-center font-small-3 mx-2 my-1"><span>Sign up
-                                      </span></p>
-                                    <div class="card-body">
-                                      <a href="#"
-                                        class="btn btn-outline-danger btn-block"><i class="fa fa-user-o"></i>
-                                        Register</a>
-                                    </div> -->
+                                    <p class="card-subtitle line-on-side text-muted text-center font-small-3 mx-4 my-1">
+                                        <span>
+                                            Sign in with
+                                        </span>
+                                    </p>
+                                    <div class="card-body row">
+                                        <div class="col-xs-6 col-sm-6 btn-login">
+                                            <input value="@ViewBag.State" name="stateNew" hidden/>
+                                            <div class="btn btn-sm btn-block btn-google-plus" data-toggle="tooltip" data-placement="top"
+                                                 title="Google Plus">
+                                                <a id="btn-login-google" class="btn-login-google">
+                                                    <i class="fa fa-google-plus fa-2x"></i>
+                                                    <span class="hidden-xs"></span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 btn-login">
+                                            <div class="btn btn-sm btn-block btn-adfs" data-toggle="tooltip" data-placement="top"
+                                                 title="ADFS">
+                                                <!-- <i class="fa fa-windows fa-2x"></i> -->
+                                                <img src="https://www.logintc.com/assets/img/logos/adfs.png" />
+                                                <span class="hidden-xs"></span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -188,21 +273,11 @@
         </div>
     </div>
     <!-- END: Content-->
-    <!-- BEGIN: Vendor JS-->
-    <script src="./login-1_files/vendors.min.js.download"></script>
-    <!-- BEGIN Vendor JS-->
-    <!-- BEGIN: Page Vendor JS-->
-    <script src="./login-1_files/jqBootstrapValidation.js.download"></script>
-    <script src="./login-1_files/icheck.min.js.download"></script>
-    <!-- END: Page Vendor JS-->
-    <!-- BEGIN: Theme JS-->
-    <script src="./login-1_files/app-menu.min.js.download"></script>
-    <script src="./login-1_files/app.min.js.download"></script>
-    <!-- END: Theme JS-->
-    <!-- BEGIN: Page JS-->
-    <script src="./login-1_files/form-login-register.min.js.download"></script>
-    <!-- END: Page JS-->
-    <!-- END: Body-->
+    <script src="~/js/LoginSpecial/app.min.js"></script>
+    <script src="~/js/LoginSpecial/login.js"></script>
+    <script src="~/js/LoginSpecial/main.js"></script>
+    <script src="~/js/message/toastr.min.js"></script>
+    <script src="~/js/message/jquery.min.js"></script>
 </body>
 
 </html>

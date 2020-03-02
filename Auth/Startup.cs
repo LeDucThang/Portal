@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,6 +29,8 @@ namespace Auth
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDistributedMemoryCache();
+
             services.AddControllersWithViews();
 
             services.AddDbContext<DataContext>(options =>
@@ -39,11 +41,13 @@ namespace Auth
             StaticParams.AdminPassword = Configuration["Config:AdminPassword"];
 
             var key = Encoding.ASCII.GetBytes(StaticParams.SecretKey);
+
+            
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; 
+            }) 
             .AddJwtBearer(x =>
             {
                 x.RequireHttpsMetadata = false;
@@ -56,6 +60,19 @@ namespace Auth
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
+            });
+            services.AddAuthentication().AddGoogle(googleOptions =>
+            {
+                googleOptions.ClientId = "998310595831-dceeoaikv8ce1qls0v35h1fbd3uskiel.apps.googleusercontent.com";
+                googleOptions.ClientSecret = "7Aur4sJBSIOXWv4gJdlDsu_B";
+            });
+            services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                // Make the session cookie essential
+                options.Cookie.IsEssential = true;
             });
         }
 
@@ -76,15 +93,17 @@ namespace Auth
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
-
+            // Session phải đặt bên trên app.UseEndpoints
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
 
             new Setup(Configuration);
         }
