@@ -10,7 +10,7 @@ namespace Common
     public class FilterPermissionDefinition
     {
         public string Name { get; private set; }
-        public FieldType Type { get; set; }
+        public FieldType Type { get; private set; }
         public string Value
         {
             set

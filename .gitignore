@@ -1,5 +1,7 @@
-.vs
-Auth/bin
-Auth/obj
-Portal.BE/bin
-Portal.BE/obj
+.vs/
+Auth/bin/
+Auth/obj/
+Portal.BE/bin/
+Portal.BE/obj/
+Portal.FE/bin/
+Portal.FE/obj/
