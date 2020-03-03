@@ -10,12 +10,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Portal.Models;
 using Z.EntityFramework.Extensions;
 
 namespace Portal.BE
@@ -29,7 +31,6 @@ namespace Portal.BE
             {
                 throw new Exception(licenseErrorMessage);
             }
-
 
             var builder = new ConfigurationBuilder()
             .SetBasePath(env.ContentRootPath)
@@ -46,6 +47,9 @@ namespace Portal.BE
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDbContext<DataContext>(options =>
+               options.UseSqlServer(Configuration.GetConnectionString("DataContext")));
+
             services.Scan(scan => scan
              .FromAssemblyOf<IServiceScoped>()
                  .AddClasses(classes => classes.AssignableTo<IServiceScoped>())
@@ -121,6 +125,8 @@ namespace Portal.BE
                 });
                 app.UseDeveloperExceptionPage();
             }
+
+            new Setup(Configuration);
         }
     }
 }

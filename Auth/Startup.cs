@@ -106,9 +106,6 @@ namespace Auth
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-
-
-            //new Setup(Configuration);
         }
     }
 }
