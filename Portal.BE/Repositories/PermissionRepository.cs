@@ -154,9 +154,8 @@ namespace Portal.Repositories
                 {
                     Id = x.Id,
                     PermissionId = x.PermissionId,
-                    FilterName = x.FilterName,
-                    FilterType = x.FilterType,
-                    FilterValue = x.FilterValue,
+                    PermissionFieldId = x.PermissionFieldId,
+                    Value = x.Value,
                 }).ToListAsync();
             Permission.Pages = await DataContext.PermissionPageMapping
                 .Where(x => x.PermissionId == Permission.Id)
@@ -165,7 +164,8 @@ namespace Portal.Repositories
                     Id = x.Page.Id,
                     Name = x.Page.Name,
                     Path = x.Page.Path,
-                    ParentId = x.Page.ParentId,
+                    ViewId = x.Page.ViewId,
+                    IsDeleted = x.Page.IsDeleted,
                 }).ToListAsync();
 
             return Permission;
@@ -241,9 +241,8 @@ namespace Portal.Repositories
                     PermissionDataDAO PermissionDataDAO = new PermissionDataDAO();
                     PermissionDataDAO.Id = PermissionData.Id;
                     PermissionDataDAO.PermissionId = PermissionData.PermissionId;
-                    PermissionDataDAO.FilterName = PermissionData.FilterName;
-                    PermissionDataDAO.FilterType = PermissionData.FilterType;
-                    PermissionDataDAO.FilterValue = PermissionData.FilterValue;
+                    PermissionDataDAO.PermissionFieldId = PermissionData.PermissionFieldId;
+                    PermissionDataDAO.Value = PermissionData.Value;
                     PermissionDataDAOs.Add(PermissionDataDAO);
                 }
                 await DataContext.PermissionData.BulkMergeAsync(PermissionDataDAOs);

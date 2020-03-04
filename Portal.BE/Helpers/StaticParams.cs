@@ -10,7 +10,6 @@ namespace Helpers
         public static DateTime DateTimeNow => DateTimeNow;
         public static DateTime DateTimeMin => DateTime.MinValue;
         public static string SecretKey { get; set; }
-        public static long ExpiredTime { get; set; }
-        public static string AdminPassword { get; set; }
+        public static string AdminPassword { get; set; } = string.Empty;
     }
 }

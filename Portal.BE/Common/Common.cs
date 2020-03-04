@@ -3,6 +3,13 @@ using System.Collections.Generic;
 
 namespace Common
 {
+    public class Root
+    {
+        protected const string Module = "portal";
+        protected const string Rpc = "rpc/";
+        protected const string Rest = "rest/";
+    }
+
     public interface IServiceScoped
     {
     }

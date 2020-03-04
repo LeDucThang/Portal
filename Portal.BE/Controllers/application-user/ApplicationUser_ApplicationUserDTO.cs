@@ -15,9 +15,6 @@ namespace Portal.Controllers.application_user
         public string Email { get; set; }
         public string Phone { get; set; }
         public long UserStatusId { get; set; }
-        public long RetryTime { get; set; }
-        public long ProviderId { get; set; }
-        public ApplicationUser_ProviderDTO Provider { get; set; }
         public ApplicationUser_UserStatusDTO UserStatus { get; set; }
         public List<ApplicationUser_RoleDTO> Roles { get; set; }
 
@@ -31,9 +28,6 @@ namespace Portal.Controllers.application_user
             this.Email = ApplicationUser.Email;
             this.Phone = ApplicationUser.Phone;
             this.UserStatusId = ApplicationUser.UserStatusId;
-            this.RetryTime = ApplicationUser.RetryTime;
-            this.ProviderId = ApplicationUser.ProviderId;
-            this.Provider = ApplicationUser.Provider == null ? null : new ApplicationUser_ProviderDTO(ApplicationUser.Provider);
             this.UserStatus = ApplicationUser.UserStatus == null ? null : new ApplicationUser_UserStatusDTO(ApplicationUser.UserStatus);
             this.Roles = ApplicationUser.Roles?.Select(x => new ApplicationUser_RoleDTO(x)).ToList();
         }
@@ -48,8 +42,6 @@ namespace Portal.Controllers.application_user
         public StringFilter Email { get; set; }
         public StringFilter Phone { get; set; }
         public IdFilter UserStatusId { get; set; }
-        public LongFilter RetryTime { get; set; }
-        public IdFilter ProviderId { get; set; }
         public ApplicationUserOrder OrderBy { get; set; }
     }
 }

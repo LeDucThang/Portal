@@ -198,24 +198,21 @@ namespace Portal.Services.MPermissionData
                 int StartRow = 1;
                 int IdColumn = 0 + StartColumn;
                 int PermissionIdColumn = 1 + StartColumn;
-                int FilterNameColumn = 2 + StartColumn;
-                int FilterTypeColumn = 3 + StartColumn;
-                int FilterValueColumn = 4 + StartColumn;
+                int PermissionFieldIdColumn = 2 + StartColumn;
+                int ValueColumn = 3 + StartColumn;
                 for (int i = 1; i <= worksheet.Dimension.End.Row; i++)
                 {
                     if (string.IsNullOrEmpty(worksheet.Cells[i + StartRow, IdColumn].Value?.ToString()))
                         break;
                     string IdValue = worksheet.Cells[i + StartRow, IdColumn].Value?.ToString();
                     string PermissionIdValue = worksheet.Cells[i + StartRow, PermissionIdColumn].Value?.ToString();
-                    string FilterNameValue = worksheet.Cells[i + StartRow, FilterNameColumn].Value?.ToString();
-                    string FilterTypeValue = worksheet.Cells[i + StartRow, FilterTypeColumn].Value?.ToString();
-                    string FilterValueValue = worksheet.Cells[i + StartRow, FilterValueColumn].Value?.ToString();
+                    string PermissionFieldIdValue = worksheet.Cells[i + StartRow, PermissionFieldIdColumn].Value?.ToString();
+                    string ValueValue = worksheet.Cells[i + StartRow, ValueColumn].Value?.ToString();
                     PermissionData PermissionData = new PermissionData();
                     PermissionData.Id = long.TryParse(IdValue, out long Id) ? Id : 0;
                     PermissionData.PermissionId = long.TryParse(PermissionIdValue, out long PermissionId) ? PermissionId : 0;
-                    PermissionData.FilterName = FilterNameValue;
-                    PermissionData.FilterType = FilterTypeValue;
-                    PermissionData.FilterValue = FilterValueValue;
+                    PermissionData.PermissionFieldId = long.TryParse(PermissionFieldIdValue, out long PermissionFieldId) ? PermissionFieldId : 0;
+                    PermissionData.Value = ValueValue;
                     PermissionDatas.Add(PermissionData);
                 }
             }
@@ -260,24 +257,21 @@ namespace Portal.Services.MPermissionData
                 int StartRow = 2;
                 int IdColumn = 0 + StartColumn;
                 int PermissionIdColumn = 1 + StartColumn;
-                int FilterNameColumn = 2 + StartColumn;
-                int FilterTypeColumn = 3 + StartColumn;
-                int FilterValueColumn = 4 + StartColumn;
+                int PermissionFieldIdColumn = 2 + StartColumn;
+                int ValueColumn = 3 + StartColumn;
                 
                 worksheet.Cells[1, IdColumn].Value = nameof(PermissionData.Id);
                 worksheet.Cells[1, PermissionIdColumn].Value = nameof(PermissionData.PermissionId);
-                worksheet.Cells[1, FilterNameColumn].Value = nameof(PermissionData.FilterName);
-                worksheet.Cells[1, FilterTypeColumn].Value = nameof(PermissionData.FilterType);
-                worksheet.Cells[1, FilterValueColumn].Value = nameof(PermissionData.FilterValue);
+                worksheet.Cells[1, PermissionFieldIdColumn].Value = nameof(PermissionData.PermissionFieldId);
+                worksheet.Cells[1, ValueColumn].Value = nameof(PermissionData.Value);
 
                 for(int i = 0; i < PermissionDatas.Count; i++)
                 {
                     PermissionData PermissionData = PermissionDatas[i];
                     worksheet.Cells[i + StartRow, IdColumn].Value = PermissionData.Id;
                     worksheet.Cells[i + StartRow, PermissionIdColumn].Value = PermissionData.PermissionId;
-                    worksheet.Cells[i + StartRow, FilterNameColumn].Value = PermissionData.FilterName;
-                    worksheet.Cells[i + StartRow, FilterTypeColumn].Value = PermissionData.FilterType;
-                    worksheet.Cells[i + StartRow, FilterValueColumn].Value = PermissionData.FilterValue;
+                    worksheet.Cells[i + StartRow, PermissionFieldIdColumn].Value = PermissionData.PermissionFieldId;
+                    worksheet.Cells[i + StartRow, ValueColumn].Value = PermissionData.Value;
                 }
                 excelPackage.Save();
             }
@@ -301,12 +295,10 @@ namespace Portal.Services.MPermissionData
                     subFilter.Id = Map(subFilter.Id, currentFilter.Value);
                 if (currentFilter.Value.Name == nameof(subFilter.PermissionId))
                     subFilter.PermissionId = Map(subFilter.PermissionId, currentFilter.Value);
-                if (currentFilter.Value.Name == nameof(subFilter.FilterName))
-                    subFilter.FilterName = Map(subFilter.FilterName, currentFilter.Value);
-                if (currentFilter.Value.Name == nameof(subFilter.FilterType))
-                    subFilter.FilterType = Map(subFilter.FilterType, currentFilter.Value);
-                if (currentFilter.Value.Name == nameof(subFilter.FilterValue))
-                    subFilter.FilterValue = Map(subFilter.FilterValue, currentFilter.Value);
+                if (currentFilter.Value.Name == nameof(subFilter.PermissionFieldId))
+                    subFilter.PermissionFieldId = Map(subFilter.PermissionFieldId, currentFilter.Value);
+                if (currentFilter.Value.Name == nameof(subFilter.Value))
+                    subFilter.Value = Map(subFilter.Value, currentFilter.Value);
             }
             return filter;
         }

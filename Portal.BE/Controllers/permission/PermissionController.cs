@@ -16,8 +16,9 @@ namespace Portal.Controllers.permission
 {
     public class PermissionRoute : Root
     {
-        public const string FE = "/permission";
-        private const string Default = Base + FE;
+        public const string Master = Module + "/permission/permission-master";
+        public const string Detail = Module + "/permission/permission-detail";
+        private const string Default = Rpc + Module + "/permission";
         public const string Count = Default + "/count";
         public const string List = Default + "/list";
         public const string Get = Default + "/get";
@@ -30,8 +31,14 @@ namespace Portal.Controllers.permission
         public const string SingleListRole = Default + "/single-list-role";
         public const string CountPage = Default + "/count-page";
         public const string ListPage = Default + "/list-page";
+        public static Dictionary<string, FieldType> Filters = new Dictionary<string, FieldType>
+        {
+            { nameof(Permission.Id), FieldType.ID },
+            { nameof(Permission.Name), FieldType.STRING },
+            { nameof(Permission.RoleId), FieldType.ID },
+        };
     }
-    
+
     public class PermissionController : ApiController
     {
         private IRoleService RoleService;
@@ -141,7 +148,7 @@ namespace Portal.Controllers.permission
             List<Permission> Permissions = await PermissionService.List(PermissionFilter);
             return Permissions.Select(c => new Permission_PermissionDTO(c)).ToList();
         }
-        
+
         [Route(PermissionRoute.Export), HttpPost]
         public async Task<List<Permission_PermissionDTO>> Export([FromBody] Permission_PermissionFilterDTO Permission_PermissionFilterDTO)
         {
@@ -169,11 +176,10 @@ namespace Portal.Controllers.permission
                 {
                     Id = x.Id,
                     PermissionId = x.PermissionId,
-                    FilterName = x.FilterName,
-                    FilterType = x.FilterType,
-                    FilterValue = x.FilterValue,
+                    PermissionFieldId = x.PermissionFieldId,
+                    Value = x.Value,
                 }).ToList();
-            
+
             return Permission;
         }
 
@@ -219,7 +225,7 @@ namespace Portal.Controllers.permission
             PageFilter.Id = Permission_PageFilterDTO.Id;
             PageFilter.Name = Permission_PageFilterDTO.Name;
             PageFilter.Path = Permission_PageFilterDTO.Path;
-            PageFilter.ParentId = Permission_PageFilterDTO.ParentId;
+            PageFilter.ViewId = Permission_PageFilterDTO.ViewId;
 
             return await PageService.Count(PageFilter);
         }
@@ -236,7 +242,7 @@ namespace Portal.Controllers.permission
             PageFilter.Id = Permission_PageFilterDTO.Id;
             PageFilter.Name = Permission_PageFilterDTO.Name;
             PageFilter.Path = Permission_PageFilterDTO.Path;
-            PageFilter.ParentId = Permission_PageFilterDTO.ParentId;
+            PageFilter.ViewId = Permission_PageFilterDTO.ViewId;
 
             List<Page> Pages = await PageService.List(PageFilter);
             List<Permission_PageDTO> Permission_PageDTOs = Pages

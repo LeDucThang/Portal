@@ -203,8 +203,6 @@ namespace Portal.Services.MApplicationUser
                 int EmailColumn = 4 + StartColumn;
                 int PhoneColumn = 5 + StartColumn;
                 int UserStatusIdColumn = 6 + StartColumn;
-                int RetryTimeColumn = 7 + StartColumn;
-                int ProviderIdColumn = 8 + StartColumn;
                 for (int i = 1; i <= worksheet.Dimension.End.Row; i++)
                 {
                     if (string.IsNullOrEmpty(worksheet.Cells[i + StartRow, IdColumn].Value?.ToString()))
@@ -216,8 +214,6 @@ namespace Portal.Services.MApplicationUser
                     string EmailValue = worksheet.Cells[i + StartRow, EmailColumn].Value?.ToString();
                     string PhoneValue = worksheet.Cells[i + StartRow, PhoneColumn].Value?.ToString();
                     string UserStatusIdValue = worksheet.Cells[i + StartRow, UserStatusIdColumn].Value?.ToString();
-                    string RetryTimeValue = worksheet.Cells[i + StartRow, RetryTimeColumn].Value?.ToString();
-                    string ProviderIdValue = worksheet.Cells[i + StartRow, ProviderIdColumn].Value?.ToString();
                     ApplicationUser ApplicationUser = new ApplicationUser();
                     ApplicationUser.Id = long.TryParse(IdValue, out long Id) ? Id : 0;
                     ApplicationUser.Username = UsernameValue;
@@ -226,8 +222,6 @@ namespace Portal.Services.MApplicationUser
                     ApplicationUser.Email = EmailValue;
                     ApplicationUser.Phone = PhoneValue;
                     ApplicationUser.UserStatusId = long.TryParse(UserStatusIdValue, out long UserStatusId) ? UserStatusId : 0;
-                    ApplicationUser.RetryTime = long.TryParse(RetryTimeValue, out long RetryTime) ? RetryTime : 0;
-                    ApplicationUser.ProviderId = long.TryParse(ProviderIdValue, out long ProviderId) ? ProviderId : 0;
                     ApplicationUsers.Add(ApplicationUser);
                 }
             }
@@ -277,8 +271,6 @@ namespace Portal.Services.MApplicationUser
                 int EmailColumn = 4 + StartColumn;
                 int PhoneColumn = 5 + StartColumn;
                 int UserStatusIdColumn = 6 + StartColumn;
-                int RetryTimeColumn = 7 + StartColumn;
-                int ProviderIdColumn = 8 + StartColumn;
                 
                 worksheet.Cells[1, IdColumn].Value = nameof(ApplicationUser.Id);
                 worksheet.Cells[1, UsernameColumn].Value = nameof(ApplicationUser.Username);
@@ -287,8 +279,6 @@ namespace Portal.Services.MApplicationUser
                 worksheet.Cells[1, EmailColumn].Value = nameof(ApplicationUser.Email);
                 worksheet.Cells[1, PhoneColumn].Value = nameof(ApplicationUser.Phone);
                 worksheet.Cells[1, UserStatusIdColumn].Value = nameof(ApplicationUser.UserStatusId);
-                worksheet.Cells[1, RetryTimeColumn].Value = nameof(ApplicationUser.RetryTime);
-                worksheet.Cells[1, ProviderIdColumn].Value = nameof(ApplicationUser.ProviderId);
 
                 for(int i = 0; i < ApplicationUsers.Count; i++)
                 {
@@ -300,8 +290,6 @@ namespace Portal.Services.MApplicationUser
                     worksheet.Cells[i + StartRow, EmailColumn].Value = ApplicationUser.Email;
                     worksheet.Cells[i + StartRow, PhoneColumn].Value = ApplicationUser.Phone;
                     worksheet.Cells[i + StartRow, UserStatusIdColumn].Value = ApplicationUser.UserStatusId;
-                    worksheet.Cells[i + StartRow, RetryTimeColumn].Value = ApplicationUser.RetryTime;
-                    worksheet.Cells[i + StartRow, ProviderIdColumn].Value = ApplicationUser.ProviderId;
                 }
                 excelPackage.Save();
             }
@@ -335,10 +323,6 @@ namespace Portal.Services.MApplicationUser
                     subFilter.Phone = Map(subFilter.Phone, currentFilter.Value);
                 if (currentFilter.Value.Name == nameof(subFilter.UserStatusId))
                     subFilter.UserStatusId = Map(subFilter.UserStatusId, currentFilter.Value);
-                if (currentFilter.Value.Name == nameof(subFilter.RetryTime))
-                    subFilter.RetryTime = Map(subFilter.RetryTime, currentFilter.Value);
-                if (currentFilter.Value.Name == nameof(subFilter.ProviderId))
-                    subFilter.ProviderId = Map(subFilter.ProviderId, currentFilter.Value);
             }
             return filter;
         }

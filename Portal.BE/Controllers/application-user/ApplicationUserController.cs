@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Portal.Entities;
 using Portal.Services.MApplicationUser;
-using Portal.Services.MProvider;using Portal.Services.MUserStatus;
+using Portal.Services.MUserStatus;
 using Portal.Services.MRole;
 
 
@@ -16,8 +16,9 @@ namespace Portal.Controllers.application_user
 {
     public class ApplicationUserRoute : Root
     {
-        public const string FE = "/application-user";
-        private const string Default = Base + FE;
+        public const string Master = Module + "/application-user/application-user-master";
+        public const string Detail = Module + "/application-user/application-user-detail";
+        private const string Default = Rpc + Module + "/application-user";
         public const string Count = Default + "/count";
         public const string List = Default + "/list";
         public const string Get = Default + "/get";
@@ -27,15 +28,23 @@ namespace Portal.Controllers.application_user
         public const string Import = Default + "/import";
         public const string Export = Default + "/export";
 
-        public const string SingleListProvider = Default + "/single-list-provider";
         public const string SingleListUserStatus = Default + "/single-list-user-status";
         public const string CountRole = Default + "/count-role";
         public const string ListRole = Default + "/list-role";
+        public static Dictionary<string, FieldType> Filters = new Dictionary<string, FieldType>
+        {
+            { nameof(ApplicationUser.Id), FieldType.ID },
+            { nameof(ApplicationUser.Username), FieldType.STRING },
+            { nameof(ApplicationUser.Password), FieldType.STRING },
+            { nameof(ApplicationUser.DisplayName), FieldType.STRING },
+            { nameof(ApplicationUser.Email), FieldType.STRING },
+            { nameof(ApplicationUser.Phone), FieldType.STRING },
+            { nameof(ApplicationUser.UserStatusId), FieldType.ID },
+        };
     }
-    
+
     public class ApplicationUserController : ApiController
     {
-        private IProviderService ProviderService;
         private IUserStatusService UserStatusService;
         
         private IRoleService RoleService;
@@ -43,7 +52,6 @@ namespace Portal.Controllers.application_user
         private IApplicationUserService ApplicationUserService;
 
         public ApplicationUserController(
-            IProviderService ProviderService,
             IUserStatusService UserStatusService,
             
             IRoleService RoleService,
@@ -51,7 +59,6 @@ namespace Portal.Controllers.application_user
             IApplicationUserService ApplicationUserService
         )
         {
-            this.ProviderService = ProviderService;
             this.UserStatusService = UserStatusService;
             
             this.RoleService = RoleService;
@@ -145,7 +152,7 @@ namespace Portal.Controllers.application_user
             List<ApplicationUser> ApplicationUsers = await ApplicationUserService.List(ApplicationUserFilter);
             return ApplicationUsers.Select(c => new ApplicationUser_ApplicationUserDTO(c)).ToList();
         }
-        
+
         [Route(ApplicationUserRoute.Export), HttpPost]
         public async Task<List<ApplicationUser_ApplicationUserDTO>> Export([FromBody] ApplicationUser_ApplicationUserFilterDTO ApplicationUser_ApplicationUserFilterDTO)
         {
@@ -167,23 +174,13 @@ namespace Portal.Controllers.application_user
             ApplicationUser.Email = ApplicationUser_ApplicationUserDTO.Email;
             ApplicationUser.Phone = ApplicationUser_ApplicationUserDTO.Phone;
             ApplicationUser.UserStatusId = ApplicationUser_ApplicationUserDTO.UserStatusId;
-            ApplicationUser.RetryTime = ApplicationUser_ApplicationUserDTO.RetryTime;
-            ApplicationUser.ProviderId = ApplicationUser_ApplicationUserDTO.ProviderId;
-            ApplicationUser.Provider = ApplicationUser_ApplicationUserDTO.Provider == null ? null : new Provider
-            {
-                Id = ApplicationUser_ApplicationUserDTO.Provider.Id,
-                Name = ApplicationUser_ApplicationUserDTO.Provider.Name,
-                ProviderTypeId = ApplicationUser_ApplicationUserDTO.Provider.ProviderTypeId,
-                Value = ApplicationUser_ApplicationUserDTO.Provider.Value,
-                IsDefault = ApplicationUser_ApplicationUserDTO.Provider.IsDefault,
-            };
             ApplicationUser.UserStatus = ApplicationUser_ApplicationUserDTO.UserStatus == null ? null : new UserStatus
             {
                 Id = ApplicationUser_ApplicationUserDTO.UserStatus.Id,
                 Code = ApplicationUser_ApplicationUserDTO.UserStatus.Code,
                 Name = ApplicationUser_ApplicationUserDTO.UserStatus.Name,
             };
-            
+
             return ApplicationUser;
         }
 
@@ -203,31 +200,9 @@ namespace Portal.Controllers.application_user
             ApplicationUserFilter.Email = ApplicationUser_ApplicationUserFilterDTO.Email;
             ApplicationUserFilter.Phone = ApplicationUser_ApplicationUserFilterDTO.Phone;
             ApplicationUserFilter.UserStatusId = ApplicationUser_ApplicationUserFilterDTO.UserStatusId;
-            ApplicationUserFilter.RetryTime = ApplicationUser_ApplicationUserFilterDTO.RetryTime;
-            ApplicationUserFilter.ProviderId = ApplicationUser_ApplicationUserFilterDTO.ProviderId;
             return ApplicationUserFilter;
         }
 
-        
-        [Route(ApplicationUserRoute.SingleListProvider), HttpPost]
-        public async Task<List<ApplicationUser_ProviderDTO>> SingleListProvider([FromBody] ApplicationUser_ProviderFilterDTO ApplicationUser_ProviderFilterDTO)
-        {
-            ProviderFilter ProviderFilter = new ProviderFilter();
-            ProviderFilter.Skip = 0;
-            ProviderFilter.Take = 20;
-            ProviderFilter.OrderBy = ProviderOrder.Id;
-            ProviderFilter.OrderType = OrderType.ASC;
-            ProviderFilter.Selects = ProviderSelect.ALL;
-            ProviderFilter.Id = ApplicationUser_ProviderFilterDTO.Id;
-            ProviderFilter.Name = ApplicationUser_ProviderFilterDTO.Name;
-            ProviderFilter.ProviderTypeId = ApplicationUser_ProviderFilterDTO.ProviderTypeId;
-            ProviderFilter.Value = ApplicationUser_ProviderFilterDTO.Value;
-
-            List<Provider> Providers = await ProviderService.List(ProviderFilter);
-            List<ApplicationUser_ProviderDTO> ApplicationUser_ProviderDTOs = Providers
-                .Select(x => new ApplicationUser_ProviderDTO(x)).ToList();
-            return ApplicationUser_ProviderDTOs;
-        }
         
         [Route(ApplicationUserRoute.SingleListUserStatus), HttpPost]
         public async Task<List<ApplicationUser_UserStatusDTO>> SingleListUserStatus([FromBody] ApplicationUser_UserStatusFilterDTO ApplicationUser_UserStatusFilterDTO)

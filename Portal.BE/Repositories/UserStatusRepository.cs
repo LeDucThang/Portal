@@ -144,8 +144,6 @@ namespace Portal.Repositories
                     Email = x.Email,
                     Phone = x.Phone,
                     UserStatusId = x.UserStatusId,
-                    RetryTime = x.RetryTime,
-                    ProviderId = x.ProviderId,
                 }).ToListAsync();
 
             return UserStatus;

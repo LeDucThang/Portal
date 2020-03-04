@@ -9,11 +9,6 @@ using System.Reflection;
 
 namespace Portal.Controllers
 {
-    public class Root
-    {
-        protected const string Base = "api/Portal";
-    }
-
     public class ApiController : ControllerBase
     {
     }

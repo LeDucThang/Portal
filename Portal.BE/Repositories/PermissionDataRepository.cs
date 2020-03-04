@@ -37,12 +37,10 @@ namespace Portal.Repositories
                 query = query.Where(q => q.Id, filter.Id);
             if (filter.PermissionId != null)
                 query = query.Where(q => q.PermissionId, filter.PermissionId);
-            if (filter.FilterName != null)
-                query = query.Where(q => q.FilterName, filter.FilterName);
-            if (filter.FilterType != null)
-                query = query.Where(q => q.FilterType, filter.FilterType);
-            if (filter.FilterValue != null)
-                query = query.Where(q => q.FilterValue, filter.FilterValue);
+            if (filter.PermissionFieldId != null)
+                query = query.Where(q => q.PermissionFieldId, filter.PermissionFieldId);
+            if (filter.Value != null)
+                query = query.Where(q => q.Value, filter.Value);
             query = OrFilter(query, filter);
             return query;
         }
@@ -59,12 +57,10 @@ namespace Portal.Repositories
                     queryable = queryable.Where(q => q.Id, filter.Id);
                 if (filter.PermissionId != null)
                     queryable = queryable.Where(q => q.PermissionId, filter.PermissionId);
-                if (filter.FilterName != null)
-                    queryable = queryable.Where(q => q.FilterName, filter.FilterName);
-                if (filter.FilterType != null)
-                    queryable = queryable.Where(q => q.FilterType, filter.FilterType);
-                if (filter.FilterValue != null)
-                    queryable = queryable.Where(q => q.FilterValue, filter.FilterValue);
+                if (filter.PermissionFieldId != null)
+                    queryable = queryable.Where(q => q.PermissionFieldId, filter.PermissionFieldId);
+                if (filter.Value != null)
+                    queryable = queryable.Where(q => q.Value, filter.Value);
                 initQuery = initQuery.Union(queryable);
             }
             return initQuery;
@@ -83,14 +79,11 @@ namespace Portal.Repositories
                         case PermissionDataOrder.Permission:
                             query = query.OrderBy(q => q.PermissionId);
                             break;
-                        case PermissionDataOrder.FilterName:
-                            query = query.OrderBy(q => q.FilterName);
+                        case PermissionDataOrder.PermissionField:
+                            query = query.OrderBy(q => q.PermissionFieldId);
                             break;
-                        case PermissionDataOrder.FilterType:
-                            query = query.OrderBy(q => q.FilterType);
-                            break;
-                        case PermissionDataOrder.FilterValue:
-                            query = query.OrderBy(q => q.FilterValue);
+                        case PermissionDataOrder.Value:
+                            query = query.OrderBy(q => q.Value);
                             break;
                     }
                     break;
@@ -103,14 +96,11 @@ namespace Portal.Repositories
                         case PermissionDataOrder.Permission:
                             query = query.OrderByDescending(q => q.PermissionId);
                             break;
-                        case PermissionDataOrder.FilterName:
-                            query = query.OrderByDescending(q => q.FilterName);
+                        case PermissionDataOrder.PermissionField:
+                            query = query.OrderByDescending(q => q.PermissionFieldId);
                             break;
-                        case PermissionDataOrder.FilterType:
-                            query = query.OrderByDescending(q => q.FilterType);
-                            break;
-                        case PermissionDataOrder.FilterValue:
-                            query = query.OrderByDescending(q => q.FilterValue);
+                        case PermissionDataOrder.Value:
+                            query = query.OrderByDescending(q => q.Value);
                             break;
                     }
                     break;
@@ -125,14 +115,20 @@ namespace Portal.Repositories
             {
                 Id = filter.Selects.Contains(PermissionDataSelect.Id) ? q.Id : default(long),
                 PermissionId = filter.Selects.Contains(PermissionDataSelect.Permission) ? q.PermissionId : default(long),
-                FilterName = filter.Selects.Contains(PermissionDataSelect.FilterName) ? q.FilterName : default(string),
-                FilterType = filter.Selects.Contains(PermissionDataSelect.FilterType) ? q.FilterType : default(string),
-                FilterValue = filter.Selects.Contains(PermissionDataSelect.FilterValue) ? q.FilterValue : default(string),
+                PermissionFieldId = filter.Selects.Contains(PermissionDataSelect.PermissionField) ? q.PermissionFieldId : default(long),
+                Value = filter.Selects.Contains(PermissionDataSelect.Value) ? q.Value : default(string),
                 Permission = filter.Selects.Contains(PermissionDataSelect.Permission) && q.Permission != null ? new Permission
                 {
                     Id = q.Permission.Id,
                     Name = q.Permission.Name,
                     RoleId = q.Permission.RoleId,
+                } : null,
+                PermissionField = filter.Selects.Contains(PermissionDataSelect.PermissionField) && q.PermissionField != null ? new PermissionField
+                {
+                    Id = q.PermissionField.Id,
+                    Name = q.PermissionField.Name,
+                    Type = q.PermissionField.Type,
+                    ViewId = q.PermissionField.ViewId,
                 } : null,
             }).ToListAsync();
             return PermissionDatas;
@@ -161,14 +157,20 @@ namespace Portal.Repositories
             {
                 Id = x.Id,
                 PermissionId = x.PermissionId,
-                FilterName = x.FilterName,
-                FilterType = x.FilterType,
-                FilterValue = x.FilterValue,
+                PermissionFieldId = x.PermissionFieldId,
+                Value = x.Value,
                 Permission = x.Permission == null ? null : new Permission
                 {
                     Id = x.Permission.Id,
                     Name = x.Permission.Name,
                     RoleId = x.Permission.RoleId,
+                },
+                PermissionField = x.PermissionField == null ? null : new PermissionField
+                {
+                    Id = x.PermissionField.Id,
+                    Name = x.PermissionField.Name,
+                    Type = x.PermissionField.Type,
+                    ViewId = x.PermissionField.ViewId,
                 },
             }).FirstOrDefaultAsync();
 
@@ -182,9 +184,8 @@ namespace Portal.Repositories
             PermissionDataDAO PermissionDataDAO = new PermissionDataDAO();
             PermissionDataDAO.Id = PermissionData.Id;
             PermissionDataDAO.PermissionId = PermissionData.PermissionId;
-            PermissionDataDAO.FilterName = PermissionData.FilterName;
-            PermissionDataDAO.FilterType = PermissionData.FilterType;
-            PermissionDataDAO.FilterValue = PermissionData.FilterValue;
+            PermissionDataDAO.PermissionFieldId = PermissionData.PermissionFieldId;
+            PermissionDataDAO.Value = PermissionData.Value;
             DataContext.PermissionData.Add(PermissionDataDAO);
             await DataContext.SaveChangesAsync();
             PermissionData.Id = PermissionDataDAO.Id;
@@ -199,9 +200,8 @@ namespace Portal.Repositories
                 return false;
             PermissionDataDAO.Id = PermissionData.Id;
             PermissionDataDAO.PermissionId = PermissionData.PermissionId;
-            PermissionDataDAO.FilterName = PermissionData.FilterName;
-            PermissionDataDAO.FilterType = PermissionData.FilterType;
-            PermissionDataDAO.FilterValue = PermissionData.FilterValue;
+            PermissionDataDAO.PermissionFieldId = PermissionData.PermissionFieldId;
+            PermissionDataDAO.Value = PermissionData.Value;
             await DataContext.SaveChangesAsync();
             await SaveReference(PermissionData);
             return true;
@@ -221,9 +221,8 @@ namespace Portal.Repositories
                 PermissionDataDAO PermissionDataDAO = new PermissionDataDAO();
                 PermissionDataDAO.Id = PermissionData.Id;
                 PermissionDataDAO.PermissionId = PermissionData.PermissionId;
-                PermissionDataDAO.FilterName = PermissionData.FilterName;
-                PermissionDataDAO.FilterType = PermissionData.FilterType;
-                PermissionDataDAO.FilterValue = PermissionData.FilterValue;
+                PermissionDataDAO.PermissionFieldId = PermissionData.PermissionFieldId;
+                PermissionDataDAO.Value = PermissionData.Value;
                 PermissionDataDAOs.Add(PermissionDataDAO);
             }
             await DataContext.BulkMergeAsync(PermissionDataDAOs);

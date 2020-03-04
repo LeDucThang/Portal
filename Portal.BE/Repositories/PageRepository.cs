@@ -39,8 +39,8 @@ namespace Portal.Repositories
                 query = query.Where(q => q.Name, filter.Name);
             if (filter.Path != null)
                 query = query.Where(q => q.Path, filter.Path);
-            if (filter.ParentId != null)
-                query = query.Where(q => q.ParentId, filter.ParentId);
+            if (filter.ViewId != null)
+                query = query.Where(q => q.ViewId, filter.ViewId);
             query = OrFilter(query, filter);
             return query;
         }
@@ -59,8 +59,8 @@ namespace Portal.Repositories
                     queryable = queryable.Where(q => q.Name, filter.Name);
                 if (filter.Path != null)
                     queryable = queryable.Where(q => q.Path, filter.Path);
-                if (filter.ParentId != null)
-                    queryable = queryable.Where(q => q.ParentId, filter.ParentId);
+                if (filter.ViewId != null)
+                    queryable = queryable.Where(q => q.ViewId, filter.ViewId);
                 initQuery = initQuery.Union(queryable);
             }
             return initQuery;
@@ -82,8 +82,11 @@ namespace Portal.Repositories
                         case PageOrder.Path:
                             query = query.OrderBy(q => q.Path);
                             break;
-                        case PageOrder.Parent:
-                            query = query.OrderBy(q => q.ParentId);
+                        case PageOrder.View:
+                            query = query.OrderBy(q => q.ViewId);
+                            break;
+                        case PageOrder.IsDeleted:
+                            query = query.OrderBy(q => q.IsDeleted);
                             break;
                     }
                     break;
@@ -99,8 +102,11 @@ namespace Portal.Repositories
                         case PageOrder.Path:
                             query = query.OrderByDescending(q => q.Path);
                             break;
-                        case PageOrder.Parent:
-                            query = query.OrderByDescending(q => q.ParentId);
+                        case PageOrder.View:
+                            query = query.OrderByDescending(q => q.ViewId);
+                            break;
+                        case PageOrder.IsDeleted:
+                            query = query.OrderByDescending(q => q.IsDeleted);
                             break;
                     }
                     break;
@@ -116,7 +122,15 @@ namespace Portal.Repositories
                 Id = filter.Selects.Contains(PageSelect.Id) ? q.Id : default(long),
                 Name = filter.Selects.Contains(PageSelect.Name) ? q.Name : default(string),
                 Path = filter.Selects.Contains(PageSelect.Path) ? q.Path : default(string),
-                ParentId = filter.Selects.Contains(PageSelect.Parent) ? q.ParentId : default(long?),
+                ViewId = filter.Selects.Contains(PageSelect.View) ? q.ViewId : default(long),
+                IsDeleted = filter.Selects.Contains(PageSelect.IsDeleted) ? q.IsDeleted : default(bool),
+                View = filter.Selects.Contains(PageSelect.View) && q.View != null ? new View
+                {
+                    Id = q.View.Id,
+                    Name = q.View.Name,
+                    Path = q.View.Path,
+                    IsDeleted = q.View.IsDeleted,
+                } : null,
             }).ToListAsync();
             return Pages;
         }
@@ -145,7 +159,15 @@ namespace Portal.Repositories
                 Id = x.Id,
                 Name = x.Name,
                 Path = x.Path,
-                ParentId = x.ParentId,
+                ViewId = x.ViewId,
+                IsDeleted = x.IsDeleted,
+                View = x.View == null ? null : new View
+                {
+                    Id = x.View.Id,
+                    Name = x.View.Name,
+                    Path = x.View.Path,
+                    IsDeleted = x.View.IsDeleted,
+                },
             }).FirstOrDefaultAsync();
 
             if (Page == null)
@@ -167,7 +189,8 @@ namespace Portal.Repositories
             PageDAO.Id = Page.Id;
             PageDAO.Name = Page.Name;
             PageDAO.Path = Page.Path;
-            PageDAO.ParentId = Page.ParentId;
+            PageDAO.ViewId = Page.ViewId;
+            PageDAO.IsDeleted = Page.IsDeleted;
             DataContext.Page.Add(PageDAO);
             await DataContext.SaveChangesAsync();
             Page.Id = PageDAO.Id;
@@ -183,7 +206,8 @@ namespace Portal.Repositories
             PageDAO.Id = Page.Id;
             PageDAO.Name = Page.Name;
             PageDAO.Path = Page.Path;
-            PageDAO.ParentId = Page.ParentId;
+            PageDAO.ViewId = Page.ViewId;
+            PageDAO.IsDeleted = Page.IsDeleted;
             await DataContext.SaveChangesAsync();
             await SaveReference(Page);
             return true;
@@ -205,7 +229,8 @@ namespace Portal.Repositories
                 PageDAO.Id = Page.Id;
                 PageDAO.Name = Page.Name;
                 PageDAO.Path = Page.Path;
-                PageDAO.ParentId = Page.ParentId;
+                PageDAO.ViewId = Page.ViewId;
+                PageDAO.IsDeleted = Page.IsDeleted;
                 PageDAOs.Add(PageDAO);
             }
             await DataContext.BulkMergeAsync(PageDAOs);

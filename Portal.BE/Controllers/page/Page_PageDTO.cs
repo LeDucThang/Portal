@@ -11,7 +11,9 @@ namespace Portal.Controllers.page
         public long Id { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
-        public long? ParentId { get; set; }
+        public long ViewId { get; set; }
+        public bool IsDeleted { get; set; }
+        public Page_ViewDTO View { get; set; }
         public List<Page_PermissionDTO> Permissions { get; set; }
 
         public Page_PageDTO() {}
@@ -20,7 +22,9 @@ namespace Portal.Controllers.page
             this.Id = Page.Id;
             this.Name = Page.Name;
             this.Path = Page.Path;
-            this.ParentId = Page.ParentId;
+            this.ViewId = Page.ViewId;
+            this.IsDeleted = Page.IsDeleted;
+            this.View = Page.View == null ? null : new Page_ViewDTO(Page.View);
             this.Permissions = Page.Permissions?.Select(x => new Page_PermissionDTO(x)).ToList();
         }
     }
@@ -30,7 +34,7 @@ namespace Portal.Controllers.page
         public IdFilter Id { get; set; }
         public StringFilter Name { get; set; }
         public StringFilter Path { get; set; }
-        public IdFilter ParentId { get; set; }
+        public IdFilter ViewId { get; set; }
         public PageOrder OrderBy { get; set; }
     }
 }

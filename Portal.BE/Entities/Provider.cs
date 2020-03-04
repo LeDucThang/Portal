@@ -10,11 +10,15 @@ namespace Portal.Entities
     {
         public long Id { get; set; }
         public string Name { get; set; }
-        public long ProviderTypeId { get; set; }
-        public string Value { get; set; }
-        public bool IsDefault { get; set; }
-        public ProviderType ProviderType { get; set; }
-        public List<ApplicationUser> ApplicationUsers { get; set; }
+        public string GoogleRedirectUri { get; set; }
+        public string ADIP { get; set; }
+        public string ADUsername { get; set; }
+        public string ADPassword { get; set; }
+        public string GoogleClientId { get; set; }
+        public string GoogleClientSecret { get; set; }
+        public string MicrosoftClientId { get; set; }
+        public string MicrosoftClientSecret { get; set; }
+        public string MicrosoftRedirectUri { get; set; }
 
         public bool Equals(Provider other)
         {
@@ -30,8 +34,15 @@ namespace Portal.Entities
     {
         public IdFilter Id { get; set; }
         public StringFilter Name { get; set; }
-        public IdFilter ProviderTypeId { get; set; }
-        public StringFilter Value { get; set; }
+        public StringFilter GoogleRedirectUri { get; set; }
+        public StringFilter ADIP { get; set; }
+        public StringFilter ADUsername { get; set; }
+        public StringFilter ADPassword { get; set; }
+        public StringFilter GoogleClientId { get; set; }
+        public StringFilter GoogleClientSecret { get; set; }
+        public StringFilter MicrosoftClientId { get; set; }
+        public StringFilter MicrosoftClientSecret { get; set; }
+        public StringFilter MicrosoftRedirectUri { get; set; }
         public List<ProviderFilter> OrFilter { get; set; }
         public ProviderOrder OrderBy {get; set;}
         public ProviderSelect Selects {get; set;}
@@ -42,9 +53,15 @@ namespace Portal.Entities
     {
         Id = 1,
         Name = 2,
-        ProviderType = 3,
-        Value = 4,
-        IsDefault = 5,
+        GoogleRedirectUri = 3,
+        ADIP = 4,
+        ADUsername = 5,
+        ADPassword = 6,
+        GoogleClient = 7,
+        GoogleClientSecret = 8,
+        MicrosoftClient = 9,
+        MicrosoftClientSecret = 10,
+        MicrosoftRedirectUri = 11,
     }
 
     [Flags]
@@ -53,8 +70,14 @@ namespace Portal.Entities
         ALL = E.ALL,
         Id = E._1,
         Name = E._2,
-        ProviderType = E._3,
-        Value = E._4,
-        IsDefault = E._5,
+        GoogleRedirectUri = E._3,
+        ADIP = E._4,
+        ADUsername = E._5,
+        ADPassword = E._6,
+        GoogleClient = E._7,
+        GoogleClientSecret = E._8,
+        MicrosoftClient = E._9,
+        MicrosoftClientSecret = E._10,
+        MicrosoftRedirectUri = E._11,
     }
 }

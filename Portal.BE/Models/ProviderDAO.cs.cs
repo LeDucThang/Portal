@@ -5,18 +5,16 @@ namespace Portal.Models
 {
     public partial class ProviderDAO
     {
-        public ProviderDAO()
-        {
-            ApplicationUsers = new HashSet<ApplicationUserDAO>();
-        }
-
         public long Id { get; set; }
         public string Name { get; set; }
-        public long ProviderTypeId { get; set; }
-        public string Value { get; set; }
-        public bool IsDefault { get; set; }
-
-        public virtual ProviderTypeDAO ProviderType { get; set; }
-        public virtual ICollection<ApplicationUserDAO> ApplicationUsers { get; set; }
+        public string GoogleRedirectUri { get; set; }
+        public string ADIP { get; set; }
+        public string ADUsername { get; set; }
+        public string ADPassword { get; set; }
+        public string GoogleClientId { get; set; }
+        public string GoogleClientSecret { get; set; }
+        public string MicrosoftClientId { get; set; }
+        public string MicrosoftClientSecret { get; set; }
+        public string MicrosoftRedirectUri { get; set; }
     }
 }

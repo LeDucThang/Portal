@@ -23,10 +23,6 @@ namespace Portal.Controllers.role
         
         public long UserStatusId { get; set; }
         
-        public long RetryTime { get; set; }
-        
-        public long ProviderId { get; set; }
-        
 
         public Role_ApplicationUserDTO() {}
         public Role_ApplicationUserDTO(ApplicationUser ApplicationUser)
@@ -45,10 +41,6 @@ namespace Portal.Controllers.role
             this.Phone = ApplicationUser.Phone;
             
             this.UserStatusId = ApplicationUser.UserStatusId;
-            
-            this.RetryTime = ApplicationUser.RetryTime;
-            
-            this.ProviderId = ApplicationUser.ProviderId;
             
         }
     }
@@ -69,10 +61,6 @@ namespace Portal.Controllers.role
         public StringFilter Phone { get; set; }
         
         public IdFilter UserStatusId { get; set; }
-        
-        public LongFilter RetryTime { get; set; }
-        
-        public IdFilter ProviderId { get; set; }
         
         public ApplicationUserOrder OrderBy { get; set; }
     }

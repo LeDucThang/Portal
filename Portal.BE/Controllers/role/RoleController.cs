@@ -16,8 +16,9 @@ namespace Portal.Controllers.role
 {
     public class RoleRoute : Root
     {
-        public const string FE = "/role";
-        private const string Default = Base + FE;
+        public const string Master = Module + "/role/role-master";
+        public const string Detail = Module + "/role/role-detail";
+        private const string Default = Rpc + Module + "/role";
         public const string Count = Default + "/count";
         public const string List = Default + "/list";
         public const string Get = Default + "/get";
@@ -29,8 +30,13 @@ namespace Portal.Controllers.role
 
         public const string CountApplicationUser = Default + "/count-application-user";
         public const string ListApplicationUser = Default + "/list-application-user";
+        public static Dictionary<string, FieldType> Filters = new Dictionary<string, FieldType>
+        {
+            { nameof(Role.Id), FieldType.ID },
+            { nameof(Role.Name), FieldType.STRING },
+        };
     }
-    
+
     public class RoleController : ApiController
     {
         
@@ -137,7 +143,7 @@ namespace Portal.Controllers.role
             List<Role> Roles = await RoleService.List(RoleFilter);
             return Roles.Select(c => new Role_RoleDTO(c)).ToList();
         }
-        
+
         [Route(RoleRoute.Export), HttpPost]
         public async Task<List<Role_RoleDTO>> Export([FromBody] Role_RoleFilterDTO Role_RoleFilterDTO)
         {
@@ -161,7 +167,7 @@ namespace Portal.Controllers.role
                     Name = x.Name,
                     RoleId = x.RoleId,
                 }).ToList();
-            
+
             return Role;
         }
 
@@ -192,8 +198,6 @@ namespace Portal.Controllers.role
             ApplicationUserFilter.Email = Role_ApplicationUserFilterDTO.Email;
             ApplicationUserFilter.Phone = Role_ApplicationUserFilterDTO.Phone;
             ApplicationUserFilter.UserStatusId = Role_ApplicationUserFilterDTO.UserStatusId;
-            ApplicationUserFilter.RetryTime = Role_ApplicationUserFilterDTO.RetryTime;
-            ApplicationUserFilter.ProviderId = Role_ApplicationUserFilterDTO.ProviderId;
 
             return await ApplicationUserService.Count(ApplicationUserFilter);
         }
@@ -214,8 +218,6 @@ namespace Portal.Controllers.role
             ApplicationUserFilter.Email = Role_ApplicationUserFilterDTO.Email;
             ApplicationUserFilter.Phone = Role_ApplicationUserFilterDTO.Phone;
             ApplicationUserFilter.UserStatusId = Role_ApplicationUserFilterDTO.UserStatusId;
-            ApplicationUserFilter.RetryTime = Role_ApplicationUserFilterDTO.RetryTime;
-            ApplicationUserFilter.ProviderId = Role_ApplicationUserFilterDTO.ProviderId;
 
             List<ApplicationUser> ApplicationUsers = await ApplicationUserService.List(ApplicationUserFilter);
             List<Role_ApplicationUserDTO> Role_ApplicationUserDTOs = ApplicationUsers

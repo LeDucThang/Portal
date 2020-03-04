@@ -10,20 +10,20 @@ namespace Portal.Controllers.permission_data
     {
         public long Id { get; set; }
         public long PermissionId { get; set; }
-        public string FilterName { get; set; }
-        public string FilterType { get; set; }
-        public string FilterValue { get; set; }
+        public long PermissionFieldId { get; set; }
+        public string Value { get; set; }
         public PermissionData_PermissionDTO Permission { get; set; }
+        public PermissionData_PermissionFieldDTO PermissionField { get; set; }
 
         public PermissionData_PermissionDataDTO() {}
         public PermissionData_PermissionDataDTO(PermissionData PermissionData)
         {
             this.Id = PermissionData.Id;
             this.PermissionId = PermissionData.PermissionId;
-            this.FilterName = PermissionData.FilterName;
-            this.FilterType = PermissionData.FilterType;
-            this.FilterValue = PermissionData.FilterValue;
+            this.PermissionFieldId = PermissionData.PermissionFieldId;
+            this.Value = PermissionData.Value;
             this.Permission = PermissionData.Permission == null ? null : new PermissionData_PermissionDTO(PermissionData.Permission);
+            this.PermissionField = PermissionData.PermissionField == null ? null : new PermissionData_PermissionFieldDTO(PermissionData.PermissionField);
         }
     }
 
@@ -31,9 +31,8 @@ namespace Portal.Controllers.permission_data
     {
         public IdFilter Id { get; set; }
         public IdFilter PermissionId { get; set; }
-        public StringFilter FilterName { get; set; }
-        public StringFilter FilterType { get; set; }
-        public StringFilter FilterValue { get; set; }
+        public IdFilter PermissionFieldId { get; set; }
+        public StringFilter Value { get; set; }
         public PermissionDataOrder OrderBy { get; set; }
     }
 }

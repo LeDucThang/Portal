@@ -26,11 +26,11 @@ namespace Portal.BE
     {
         public Startup(IHostEnvironment env)
         {
-            LicenseManager.AddLicense("2456;101-FPT", "24313111-f19c-96fd-467f-1f00b5369d33");
-            if (!LicenseManager.ValidateLicense(out string licenseErrorMessage))
-            {
-                throw new Exception(licenseErrorMessage);
-            }
+            //LicenseManager.AddLicense("2456;101-FPT", "24313111-f19c-96fd-467f-1f00b5369d33");
+            //if (!LicenseManager.ValidateLicense(out string licenseErrorMessage))
+            //{
+            //    throw new Exception(licenseErrorMessage);
+            //}
 
             var builder = new ConfigurationBuilder()
             .SetBasePath(env.ContentRootPath)
@@ -49,6 +49,13 @@ namespace Portal.BE
             services.AddControllers();
             services.AddDbContext<DataContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("DataContext")));
+            EntityFrameworkManager.ContextFactory = context =>
+            {
+                var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
+                optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DataContext"));
+                DataContext DataContext = new DataContext(optionsBuilder.Options);
+                return DataContext;
+            };
 
             services.Scan(scan => scan
              .FromAssemblyOf<IServiceScoped>()

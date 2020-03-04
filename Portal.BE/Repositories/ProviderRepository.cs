@@ -37,10 +37,24 @@ namespace Portal.Repositories
                 query = query.Where(q => q.Id, filter.Id);
             if (filter.Name != null)
                 query = query.Where(q => q.Name, filter.Name);
-            if (filter.ProviderTypeId != null)
-                query = query.Where(q => q.ProviderTypeId, filter.ProviderTypeId);
-            if (filter.Value != null)
-                query = query.Where(q => q.Value, filter.Value);
+            if (filter.GoogleRedirectUri != null)
+                query = query.Where(q => q.GoogleRedirectUri, filter.GoogleRedirectUri);
+            if (filter.ADIP != null)
+                query = query.Where(q => q.ADIP, filter.ADIP);
+            if (filter.ADUsername != null)
+                query = query.Where(q => q.ADUsername, filter.ADUsername);
+            if (filter.ADPassword != null)
+                query = query.Where(q => q.ADPassword, filter.ADPassword);
+            if (filter.GoogleClientId != null)
+                query = query.Where(q => q.GoogleClientId, filter.GoogleClientId);
+            if (filter.GoogleClientSecret != null)
+                query = query.Where(q => q.GoogleClientSecret, filter.GoogleClientSecret);
+            if (filter.MicrosoftClientId != null)
+                query = query.Where(q => q.MicrosoftClientId, filter.MicrosoftClientId);
+            if (filter.MicrosoftClientSecret != null)
+                query = query.Where(q => q.MicrosoftClientSecret, filter.MicrosoftClientSecret);
+            if (filter.MicrosoftRedirectUri != null)
+                query = query.Where(q => q.MicrosoftRedirectUri, filter.MicrosoftRedirectUri);
             query = OrFilter(query, filter);
             return query;
         }
@@ -57,10 +71,24 @@ namespace Portal.Repositories
                     queryable = queryable.Where(q => q.Id, filter.Id);
                 if (filter.Name != null)
                     queryable = queryable.Where(q => q.Name, filter.Name);
-                if (filter.ProviderTypeId != null)
-                    queryable = queryable.Where(q => q.ProviderTypeId, filter.ProviderTypeId);
-                if (filter.Value != null)
-                    queryable = queryable.Where(q => q.Value, filter.Value);
+                if (filter.GoogleRedirectUri != null)
+                    queryable = queryable.Where(q => q.GoogleRedirectUri, filter.GoogleRedirectUri);
+                if (filter.ADIP != null)
+                    queryable = queryable.Where(q => q.ADIP, filter.ADIP);
+                if (filter.ADUsername != null)
+                    queryable = queryable.Where(q => q.ADUsername, filter.ADUsername);
+                if (filter.ADPassword != null)
+                    queryable = queryable.Where(q => q.ADPassword, filter.ADPassword);
+                if (filter.GoogleClientId != null)
+                    queryable = queryable.Where(q => q.GoogleClientId, filter.GoogleClientId);
+                if (filter.GoogleClientSecret != null)
+                    queryable = queryable.Where(q => q.GoogleClientSecret, filter.GoogleClientSecret);
+                if (filter.MicrosoftClientId != null)
+                    queryable = queryable.Where(q => q.MicrosoftClientId, filter.MicrosoftClientId);
+                if (filter.MicrosoftClientSecret != null)
+                    queryable = queryable.Where(q => q.MicrosoftClientSecret, filter.MicrosoftClientSecret);
+                if (filter.MicrosoftRedirectUri != null)
+                    queryable = queryable.Where(q => q.MicrosoftRedirectUri, filter.MicrosoftRedirectUri);
                 initQuery = initQuery.Union(queryable);
             }
             return initQuery;
@@ -79,14 +107,32 @@ namespace Portal.Repositories
                         case ProviderOrder.Name:
                             query = query.OrderBy(q => q.Name);
                             break;
-                        case ProviderOrder.ProviderType:
-                            query = query.OrderBy(q => q.ProviderTypeId);
+                        case ProviderOrder.GoogleRedirectUri:
+                            query = query.OrderBy(q => q.GoogleRedirectUri);
                             break;
-                        case ProviderOrder.Value:
-                            query = query.OrderBy(q => q.Value);
+                        case ProviderOrder.ADIP:
+                            query = query.OrderBy(q => q.ADIP);
                             break;
-                        case ProviderOrder.IsDefault:
-                            query = query.OrderBy(q => q.IsDefault);
+                        case ProviderOrder.ADUsername:
+                            query = query.OrderBy(q => q.ADUsername);
+                            break;
+                        case ProviderOrder.ADPassword:
+                            query = query.OrderBy(q => q.ADPassword);
+                            break;
+                        case ProviderOrder.GoogleClient:
+                            query = query.OrderBy(q => q.GoogleClientId);
+                            break;
+                        case ProviderOrder.GoogleClientSecret:
+                            query = query.OrderBy(q => q.GoogleClientSecret);
+                            break;
+                        case ProviderOrder.MicrosoftClient:
+                            query = query.OrderBy(q => q.MicrosoftClientId);
+                            break;
+                        case ProviderOrder.MicrosoftClientSecret:
+                            query = query.OrderBy(q => q.MicrosoftClientSecret);
+                            break;
+                        case ProviderOrder.MicrosoftRedirectUri:
+                            query = query.OrderBy(q => q.MicrosoftRedirectUri);
                             break;
                     }
                     break;
@@ -99,14 +145,32 @@ namespace Portal.Repositories
                         case ProviderOrder.Name:
                             query = query.OrderByDescending(q => q.Name);
                             break;
-                        case ProviderOrder.ProviderType:
-                            query = query.OrderByDescending(q => q.ProviderTypeId);
+                        case ProviderOrder.GoogleRedirectUri:
+                            query = query.OrderByDescending(q => q.GoogleRedirectUri);
                             break;
-                        case ProviderOrder.Value:
-                            query = query.OrderByDescending(q => q.Value);
+                        case ProviderOrder.ADIP:
+                            query = query.OrderByDescending(q => q.ADIP);
                             break;
-                        case ProviderOrder.IsDefault:
-                            query = query.OrderByDescending(q => q.IsDefault);
+                        case ProviderOrder.ADUsername:
+                            query = query.OrderByDescending(q => q.ADUsername);
+                            break;
+                        case ProviderOrder.ADPassword:
+                            query = query.OrderByDescending(q => q.ADPassword);
+                            break;
+                        case ProviderOrder.GoogleClient:
+                            query = query.OrderByDescending(q => q.GoogleClientId);
+                            break;
+                        case ProviderOrder.GoogleClientSecret:
+                            query = query.OrderByDescending(q => q.GoogleClientSecret);
+                            break;
+                        case ProviderOrder.MicrosoftClient:
+                            query = query.OrderByDescending(q => q.MicrosoftClientId);
+                            break;
+                        case ProviderOrder.MicrosoftClientSecret:
+                            query = query.OrderByDescending(q => q.MicrosoftClientSecret);
+                            break;
+                        case ProviderOrder.MicrosoftRedirectUri:
+                            query = query.OrderByDescending(q => q.MicrosoftRedirectUri);
                             break;
                     }
                     break;
@@ -121,15 +185,15 @@ namespace Portal.Repositories
             {
                 Id = filter.Selects.Contains(ProviderSelect.Id) ? q.Id : default(long),
                 Name = filter.Selects.Contains(ProviderSelect.Name) ? q.Name : default(string),
-                ProviderTypeId = filter.Selects.Contains(ProviderSelect.ProviderType) ? q.ProviderTypeId : default(long),
-                Value = filter.Selects.Contains(ProviderSelect.Value) ? q.Value : default(string),
-                IsDefault = filter.Selects.Contains(ProviderSelect.IsDefault) ? q.IsDefault : default(bool),
-                ProviderType = filter.Selects.Contains(ProviderSelect.ProviderType) && q.ProviderType != null ? new ProviderType
-                {
-                    Id = q.ProviderType.Id,
-                    Code = q.ProviderType.Code,
-                    Name = q.ProviderType.Name,
-                } : null,
+                GoogleRedirectUri = filter.Selects.Contains(ProviderSelect.GoogleRedirectUri) ? q.GoogleRedirectUri : default(string),
+                ADIP = filter.Selects.Contains(ProviderSelect.ADIP) ? q.ADIP : default(string),
+                ADUsername = filter.Selects.Contains(ProviderSelect.ADUsername) ? q.ADUsername : default(string),
+                ADPassword = filter.Selects.Contains(ProviderSelect.ADPassword) ? q.ADPassword : default(string),
+                GoogleClientId = filter.Selects.Contains(ProviderSelect.GoogleClient) ? q.GoogleClientId : default(string),
+                GoogleClientSecret = filter.Selects.Contains(ProviderSelect.GoogleClientSecret) ? q.GoogleClientSecret : default(string),
+                MicrosoftClientId = filter.Selects.Contains(ProviderSelect.MicrosoftClient) ? q.MicrosoftClientId : default(string),
+                MicrosoftClientSecret = filter.Selects.Contains(ProviderSelect.MicrosoftClientSecret) ? q.MicrosoftClientSecret : default(string),
+                MicrosoftRedirectUri = filter.Selects.Contains(ProviderSelect.MicrosoftRedirectUri) ? q.MicrosoftRedirectUri : default(string),
             }).ToListAsync();
             return Providers;
         }
@@ -157,33 +221,19 @@ namespace Portal.Repositories
             {
                 Id = x.Id,
                 Name = x.Name,
-                ProviderTypeId = x.ProviderTypeId,
-                Value = x.Value,
-                IsDefault = x.IsDefault,
-                ProviderType = x.ProviderType == null ? null : new ProviderType
-                {
-                    Id = x.ProviderType.Id,
-                    Code = x.ProviderType.Code,
-                    Name = x.ProviderType.Name,
-                },
+                GoogleRedirectUri = x.GoogleRedirectUri,
+                ADIP = x.ADIP,
+                ADUsername = x.ADUsername,
+                ADPassword = x.ADPassword,
+                GoogleClientId = x.GoogleClientId,
+                GoogleClientSecret = x.GoogleClientSecret,
+                MicrosoftClientId = x.MicrosoftClientId,
+                MicrosoftClientSecret = x.MicrosoftClientSecret,
+                MicrosoftRedirectUri = x.MicrosoftRedirectUri,
             }).FirstOrDefaultAsync();
 
             if (Provider == null)
                 return null;
-            Provider.ApplicationUsers = await DataContext.ApplicationUser
-                .Where(x => x.ProviderId == Provider.Id)
-                .Select(x => new ApplicationUser
-                {
-                    Id = x.Id,
-                    Username = x.Username,
-                    Password = x.Password,
-                    DisplayName = x.DisplayName,
-                    Email = x.Email,
-                    Phone = x.Phone,
-                    UserStatusId = x.UserStatusId,
-                    RetryTime = x.RetryTime,
-                    ProviderId = x.ProviderId,
-                }).ToListAsync();
 
             return Provider;
         }
@@ -192,9 +242,15 @@ namespace Portal.Repositories
             ProviderDAO ProviderDAO = new ProviderDAO();
             ProviderDAO.Id = Provider.Id;
             ProviderDAO.Name = Provider.Name;
-            ProviderDAO.ProviderTypeId = Provider.ProviderTypeId;
-            ProviderDAO.Value = Provider.Value;
-            ProviderDAO.IsDefault = Provider.IsDefault;
+            ProviderDAO.GoogleRedirectUri = Provider.GoogleRedirectUri;
+            ProviderDAO.ADIP = Provider.ADIP;
+            ProviderDAO.ADUsername = Provider.ADUsername;
+            ProviderDAO.ADPassword = Provider.ADPassword;
+            ProviderDAO.GoogleClientId = Provider.GoogleClientId;
+            ProviderDAO.GoogleClientSecret = Provider.GoogleClientSecret;
+            ProviderDAO.MicrosoftClientId = Provider.MicrosoftClientId;
+            ProviderDAO.MicrosoftClientSecret = Provider.MicrosoftClientSecret;
+            ProviderDAO.MicrosoftRedirectUri = Provider.MicrosoftRedirectUri;
             DataContext.Provider.Add(ProviderDAO);
             await DataContext.SaveChangesAsync();
             Provider.Id = ProviderDAO.Id;
@@ -209,9 +265,15 @@ namespace Portal.Repositories
                 return false;
             ProviderDAO.Id = Provider.Id;
             ProviderDAO.Name = Provider.Name;
-            ProviderDAO.ProviderTypeId = Provider.ProviderTypeId;
-            ProviderDAO.Value = Provider.Value;
-            ProviderDAO.IsDefault = Provider.IsDefault;
+            ProviderDAO.GoogleRedirectUri = Provider.GoogleRedirectUri;
+            ProviderDAO.ADIP = Provider.ADIP;
+            ProviderDAO.ADUsername = Provider.ADUsername;
+            ProviderDAO.ADPassword = Provider.ADPassword;
+            ProviderDAO.GoogleClientId = Provider.GoogleClientId;
+            ProviderDAO.GoogleClientSecret = Provider.GoogleClientSecret;
+            ProviderDAO.MicrosoftClientId = Provider.MicrosoftClientId;
+            ProviderDAO.MicrosoftClientSecret = Provider.MicrosoftClientSecret;
+            ProviderDAO.MicrosoftRedirectUri = Provider.MicrosoftRedirectUri;
             await DataContext.SaveChangesAsync();
             await SaveReference(Provider);
             return true;
@@ -219,7 +281,6 @@ namespace Portal.Repositories
 
         public async Task<bool> Delete(Provider Provider)
         {
-            await DataContext.ApplicationUser.Where(x => x.ProviderId == Provider.Id).UpdateFromQueryAsync(x => new ApplicationUserDAO { DeletedAt = StaticParams.DateTimeNow});
             await DataContext.Provider.Where(x => x.Id == Provider.Id).DeleteFromQueryAsync();
             return true;
         }
@@ -232,9 +293,15 @@ namespace Portal.Repositories
                 ProviderDAO ProviderDAO = new ProviderDAO();
                 ProviderDAO.Id = Provider.Id;
                 ProviderDAO.Name = Provider.Name;
-                ProviderDAO.ProviderTypeId = Provider.ProviderTypeId;
-                ProviderDAO.Value = Provider.Value;
-                ProviderDAO.IsDefault = Provider.IsDefault;
+                ProviderDAO.GoogleRedirectUri = Provider.GoogleRedirectUri;
+                ProviderDAO.ADIP = Provider.ADIP;
+                ProviderDAO.ADUsername = Provider.ADUsername;
+                ProviderDAO.ADPassword = Provider.ADPassword;
+                ProviderDAO.GoogleClientId = Provider.GoogleClientId;
+                ProviderDAO.GoogleClientSecret = Provider.GoogleClientSecret;
+                ProviderDAO.MicrosoftClientId = Provider.MicrosoftClientId;
+                ProviderDAO.MicrosoftClientSecret = Provider.MicrosoftClientSecret;
+                ProviderDAO.MicrosoftRedirectUri = Provider.MicrosoftRedirectUri;
                 ProviderDAOs.Add(ProviderDAO);
             }
             await DataContext.BulkMergeAsync(ProviderDAOs);
@@ -244,57 +311,12 @@ namespace Portal.Repositories
         public async Task<bool> BulkDelete(List<Provider> Providers)
         {
             List<long> Ids = Providers.Select(x => x.Id).ToList();
-            await DataContext.ApplicationUser.Where(x => Ids.Contains(x.ProviderId)).UpdateFromQueryAsync(x => new ApplicationUserDAO { DeletedAt = StaticParams.DateTimeNow});
             await DataContext.Provider.Where(x => Ids.Contains(x.Id)).DeleteFromQueryAsync();
             return true;
         }
 
         private async Task SaveReference(Provider Provider)
         {
-            List<ApplicationUserDAO> ApplicationUserDAOs = await DataContext.ApplicationUser
-                .Where(x => x.ProviderId == Provider.Id).ToListAsync();
-            ApplicationUserDAOs.ForEach(x => x.DeletedAt = StaticParams.DateTimeNow);
-            if (Provider.ApplicationUsers != null)
-            {
-                foreach (ApplicationUser ApplicationUser in Provider.ApplicationUsers)
-                {
-                    ApplicationUserDAO ApplicationUserDAO = ApplicationUserDAOs
-                        .Where(x => x.Id == ApplicationUser.Id && x.Id != 0).FirstOrDefault();
-                    if (ApplicationUserDAO == null)
-                    {
-                        ApplicationUserDAO = new ApplicationUserDAO();
-                        ApplicationUserDAO.Id = ApplicationUser.Id;
-                        ApplicationUserDAO.Username = ApplicationUser.Username;
-                        ApplicationUserDAO.Password = ApplicationUser.Password;
-                        ApplicationUserDAO.DisplayName = ApplicationUser.DisplayName;
-                        ApplicationUserDAO.Email = ApplicationUser.Email;
-                        ApplicationUserDAO.Phone = ApplicationUser.Phone;
-                        ApplicationUserDAO.UserStatusId = ApplicationUser.UserStatusId;
-                        ApplicationUserDAO.RetryTime = ApplicationUser.RetryTime;
-                        ApplicationUserDAO.ProviderId = ApplicationUser.ProviderId;
-                        ApplicationUserDAOs.Add(ApplicationUserDAO);
-                        ApplicationUserDAO.CreatedAt = StaticParams.DateTimeNow;
-                        ApplicationUserDAO.UpdatedAt = StaticParams.DateTimeNow;
-                        ApplicationUserDAO.DeletedAt = null;
-                    }
-                    else
-                    {
-                        ApplicationUserDAO.Id = ApplicationUser.Id;
-                        ApplicationUserDAO.Username = ApplicationUser.Username;
-                        ApplicationUserDAO.Password = ApplicationUser.Password;
-                        ApplicationUserDAO.DisplayName = ApplicationUser.DisplayName;
-                        ApplicationUserDAO.Email = ApplicationUser.Email;
-                        ApplicationUserDAO.Phone = ApplicationUser.Phone;
-                        ApplicationUserDAO.UserStatusId = ApplicationUser.UserStatusId;
-                        ApplicationUserDAO.RetryTime = ApplicationUser.RetryTime;
-                        ApplicationUserDAO.ProviderId = ApplicationUser.ProviderId;
-                        ApplicationUserDAO.UpdatedAt = StaticParams.DateTimeNow;
-                        ApplicationUserDAO.DeletedAt = null;
-                    }
-                }
-                await DataContext.ApplicationUser.BulkMergeAsync(ApplicationUserDAOs);
-            }
-            
         }
     }
 }

@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using Portal.Models;
 using Helpers;
+using Common;
+using System.Reflection;
+using Portal.Models;
 
 namespace Portal.BE
 {
@@ -26,23 +28,11 @@ namespace Portal.BE
 
         private void Init()
         {
-            ProviderDAO provider = DataContext.Provider.Where(p => p.ProviderTypeId == ProviderTypeEnum.SELF.Id).FirstOrDefault();
-            if (provider == null)
-            {
-                provider = new ProviderDAO
-                {
-                    Name = "Local",
-                    IsDefault = true,
-                    ProviderTypeId = ProviderTypeEnum.SELF.Id,
-                    Value = null,
-                };
-                DataContext.Provider.Add(provider);
-                DataContext.SaveChanges();
-            }
+            InitRoute();
 
             RoleDAO Admin = DataContext.Role
-                .Where(r => r.Name == "ADMIN")
-                .FirstOrDefault();
+               .Where(r => r.Name == "ADMIN")
+               .FirstOrDefault();
             if (Admin == null)
             {
                 Admin = new RoleDAO
@@ -67,9 +57,7 @@ namespace Portal.BE
                     Email = "",
                     Password = HashPassword(StaticParams.AdminPassword),
                     Phone = "",
-                    RetryTime = 0,
                     UserStatusId = UserStatusEnum.ACTIVE.Id,
-                    ProviderId = provider.Id,
                     Username = "Administrator"
                 };
                 DataContext.ApplicationUser.Add(applicationUser);
@@ -91,50 +79,145 @@ namespace Portal.BE
             }
         }
 
+        private void InitRoute()
+        {
+            List<Type> routeTypes = typeof(Setup).Assembly.GetTypes()
+               .Where(x => typeof(Root).IsAssignableFrom(x) && x.IsClass)
+               .ToList();
+
+            List<ViewDAO> views = DataContext.View.ToList();
+            views.ForEach(m => m.IsDeleted = true);
+            foreach (Type type in routeTypes)
+            {
+                ViewDAO view = views.Where(m => m.Name == type.Name).FirstOrDefault();
+                if (view == null)
+                {
+                    view = new ViewDAO
+                    {
+                        Name = type.Name,
+                        IsDeleted = false,
+                    };
+                    views.Add(view);
+                }
+                else
+                {
+                    view.IsDeleted = false;
+                }
+            }
+            DataContext.BulkMerge(views);
+            views = DataContext.View.ToList();
+            List<PageDAO> pages = DataContext.Page.OrderBy(p => p.Path).ToList();
+            pages.ForEach(p => p.IsDeleted = true);
+            foreach (Type type in routeTypes)
+            {
+                ViewDAO view = views.Where(v => v.Name == type.Name).FirstOrDefault();
+                var values = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                .Where(fi => fi.IsLiteral && !fi.IsInitOnly && fi.FieldType == typeof(string))
+                .Select(x => (string)x.GetRawConstantValue())
+                .ToList();
+                foreach (string value in values)
+                {
+                    PageDAO page = pages.Where(p => p.Path == value).FirstOrDefault();
+                    if (page == null)
+                    {
+                        page = new PageDAO
+                        {
+                            Name = value,
+                            Path = value,
+                            IsDeleted = false,
+                            ViewId = view.Id,
+                        };
+                        pages.Add(page);
+                    }
+                    else
+                    {
+                        page.IsDeleted = false;
+                    }
+                }
+            }
+            DataContext.BulkMerge(pages);
+            List<PermissionFieldDAO> permissionFields = DataContext.PermissionField.ToList();
+            permissionFields.ForEach(p => p.IsDeleted = true);
+            foreach (Type type in routeTypes)
+            {
+                ViewDAO view = views.Where(v => v.Name == type.Name).FirstOrDefault();
+                var value = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                .Where(fi => !fi.IsInitOnly && fi.FieldType == typeof(Dictionary<string, FieldType>))
+                .Select(x => (Dictionary<string, FieldType>)x.GetValue(x))
+                .FirstOrDefault();
+                if (value == null)
+                    continue;
+                foreach (var pair in value)
+                {
+                    PermissionFieldDAO permissionField = permissionFields
+                        .Where(p => p.ViewId == view.Id && p.Name == pair.Key)
+                        .FirstOrDefault();
+                    if (permissionField == null)
+                    {
+                        permissionField = new PermissionFieldDAO
+                        {
+                            ViewId = view.Id,
+                            Name = pair.Key,
+                            Type = pair.Value.ToString(),
+                            IsDeleted = false,
+                        };
+                        permissionFields.Add(permissionField);
+                    }
+                    else
+                    {
+                        permissionField.IsDeleted = false;
+                    }
+                }
+            }
+            DataContext.BulkMerge(permissionFields);
+            string sql = DataContext.PermissionPageMapping.Where(ppm => ppm.Page != null && ppm.Page.IsDeleted).ToSql();
+            DataContext.PermissionPageMapping.Where(ppm => ppm.Page != null && ppm.Page.IsDeleted).DeleteFromQuery();
+            DataContext.Page.Where(p => p.IsDeleted || (p.View != null && p.View.IsDeleted)).DeleteFromQuery();
+            DataContext.PermissionData.Where(pd => pd.PermissionField != null && pd.PermissionField.IsDeleted).DeleteFromQuery();
+            DataContext.PermissionField.Where(pf => pf.IsDeleted || (pf.View != null && pf.View.IsDeleted)).DeleteFromQuery();
+            DataContext.View.Where(v => v.IsDeleted).DeleteFromQuery();
+        }
+
         private void InitEnum()
         {
-            InitProviderTypeEnum();
+            InitProviderEnum();
             InitUserStatusEnum();
             DataContext.SaveChanges();
         }
-        private void InitProviderTypeEnum()
+        private void InitProviderEnum()
         {
-            List<ProviderTypeDAO> providerTypes = DataContext.ProviderType.ToList();
-            if (!providerTypes.Any(pt => pt.Id == ProviderTypeEnum.SELF.Id))
+            List<ProviderDAO> providers = DataContext.Provider.ToList();
+            if (!providers.Any(pt => pt.Id == ProviderEnum.SELF.Id))
             {
-                DataContext.ProviderType.Add(new ProviderTypeDAO
+                providers.Add(new ProviderDAO
                 {
-                    Id = ProviderTypeEnum.SELF.Id,
-                    Code = ProviderTypeEnum.SELF.Code,
-                    Name = ProviderTypeEnum.SELF.Name,
+                    Id = ProviderEnum.SELF.Id,
+                    Name = ProviderEnum.SELF.Name,
                 });
             }
-            if (!providerTypes.Any(pt => pt.Id == ProviderTypeEnum.AD.Id))
+            if (!providers.Any(pt => pt.Id == ProviderEnum.AD.Id))
             {
-                DataContext.ProviderType.Add(new ProviderTypeDAO
+                providers.Add(new ProviderDAO
                 {
-                    Id = ProviderTypeEnum.AD.Id,
-                    Code = ProviderTypeEnum.AD.Code,
-                    Name = ProviderTypeEnum.AD.Name,
+                    Id = ProviderEnum.AD.Id,
+                    Name = ProviderEnum.AD.Name,
                 });
             }
 
-            if (!providerTypes.Any(pt => pt.Id == ProviderTypeEnum.ADFS.Id))
+            if (!providers.Any(pt => pt.Id == ProviderEnum.Microsoft.Id))
             {
-                DataContext.ProviderType.Add(new ProviderTypeDAO
+                providers.Add(new ProviderDAO
                 {
-                    Id = ProviderTypeEnum.ADFS.Id,
-                    Code = ProviderTypeEnum.ADFS.Code,
-                    Name = ProviderTypeEnum.ADFS.Name,
+                    Id = ProviderEnum.Microsoft.Id,
+                    Name = ProviderEnum.Microsoft.Name,
                 });
             }
-            if (!providerTypes.Any(pt => pt.Id == ProviderTypeEnum.GOOGLE.Id))
+            if (!providers.Any(pt => pt.Id == ProviderEnum.GOOGLE.Id))
             {
-                DataContext.ProviderType.Add(new ProviderTypeDAO
+                providers.Add(new ProviderDAO
                 {
-                    Id = ProviderTypeEnum.GOOGLE.Id,
-                    Code = ProviderTypeEnum.GOOGLE.Code,
-                    Name = ProviderTypeEnum.GOOGLE.Name,
+                    Id = ProviderEnum.GOOGLE.Id,
+                    Name = ProviderEnum.GOOGLE.Name,
                 });
             }
         }

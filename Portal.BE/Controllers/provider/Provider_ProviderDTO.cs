@@ -10,22 +10,30 @@ namespace Portal.Controllers.provider
     {
         public long Id { get; set; }
         public string Name { get; set; }
-        public long ProviderTypeId { get; set; }
-        public string Value { get; set; }
-        public bool IsDefault { get; set; }
-        public Provider_ProviderTypeDTO ProviderType { get; set; }
-        public List<Provider_ApplicationUserDTO> ApplicationUsers { get; set; }
+        public string GoogleRedirectUri { get; set; }
+        public string ADIP { get; set; }
+        public string ADUsername { get; set; }
+        public string ADPassword { get; set; }
+        public string GoogleClientId { get; set; }
+        public string GoogleClientSecret { get; set; }
+        public string MicrosoftClientId { get; set; }
+        public string MicrosoftClientSecret { get; set; }
+        public string MicrosoftRedirectUri { get; set; }
 
         public Provider_ProviderDTO() {}
         public Provider_ProviderDTO(Provider Provider)
         {
             this.Id = Provider.Id;
             this.Name = Provider.Name;
-            this.ProviderTypeId = Provider.ProviderTypeId;
-            this.Value = Provider.Value;
-            this.IsDefault = Provider.IsDefault;
-            this.ProviderType = Provider.ProviderType == null ? null : new Provider_ProviderTypeDTO(Provider.ProviderType);
-            this.ApplicationUsers = Provider.ApplicationUsers?.Select(x => new Provider_ApplicationUserDTO(x)).ToList();
+            this.GoogleRedirectUri = Provider.GoogleRedirectUri;
+            this.ADIP = Provider.ADIP;
+            this.ADUsername = Provider.ADUsername;
+            this.ADPassword = Provider.ADPassword;
+            this.GoogleClientId = Provider.GoogleClientId;
+            this.GoogleClientSecret = Provider.GoogleClientSecret;
+            this.MicrosoftClientId = Provider.MicrosoftClientId;
+            this.MicrosoftClientSecret = Provider.MicrosoftClientSecret;
+            this.MicrosoftRedirectUri = Provider.MicrosoftRedirectUri;
         }
     }
 
@@ -33,8 +41,15 @@ namespace Portal.Controllers.provider
     {
         public IdFilter Id { get; set; }
         public StringFilter Name { get; set; }
-        public IdFilter ProviderTypeId { get; set; }
-        public StringFilter Value { get; set; }
+        public StringFilter GoogleRedirectUri { get; set; }
+        public StringFilter ADIP { get; set; }
+        public StringFilter ADUsername { get; set; }
+        public StringFilter ADPassword { get; set; }
+        public StringFilter GoogleClientId { get; set; }
+        public StringFilter GoogleClientSecret { get; set; }
+        public StringFilter MicrosoftClientId { get; set; }
+        public StringFilter MicrosoftClientSecret { get; set; }
+        public StringFilter MicrosoftRedirectUri { get; set; }
         public ProviderOrder OrderBy { get; set; }
     }
 }

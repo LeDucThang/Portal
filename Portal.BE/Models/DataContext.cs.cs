@@ -10,13 +10,14 @@ namespace Portal.Models
         public virtual DbSet<PageDAO> Page { get; set; }
         public virtual DbSet<PermissionDAO> Permission { get; set; }
         public virtual DbSet<PermissionDataDAO> PermissionData { get; set; }
+        public virtual DbSet<PermissionFieldDAO> PermissionField { get; set; }
         public virtual DbSet<PermissionPageMappingDAO> PermissionPageMapping { get; set; }
         public virtual DbSet<ProviderDAO> Provider { get; set; }
-        public virtual DbSet<ProviderTypeDAO> ProviderType { get; set; }
         public virtual DbSet<RoleDAO> Role { get; set; }
         public virtual DbSet<SiteDAO> Site { get; set; }
         public virtual DbSet<UserRoleMappingDAO> UserRoleMapping { get; set; }
         public virtual DbSet<UserStatusDAO> UserStatus { get; set; }
+        public virtual DbSet<ViewDAO> View { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -27,7 +28,7 @@ namespace Portal.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("data source=.;initial catalog=Portal;persist security info=True;user id=sa;password=123@123a;multipleactiveresultsets=True;");
+                optionsBuilder.UseSqlServer("data source=192.168.20.200;initial catalog=Portal;persist security info=True;user id=sa;password=123@123a;multipleactiveresultsets=True;");
             }
         }
 
@@ -37,6 +38,8 @@ namespace Portal.Models
 
             modelBuilder.Entity<ApplicationUserDAO>(entity =>
             {
+                entity.HasIndex(e => e.UserStatusId);
+
                 entity.Property(e => e.CreatedAt).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletedAt).HasColumnType("datetime");
@@ -57,12 +60,6 @@ namespace Portal.Models
                     .IsRequired()
                     .HasMaxLength(500);
 
-                entity.HasOne(d => d.Provider)
-                    .WithMany(p => p.ApplicationUsers)
-                    .HasForeignKey(d => d.ProviderId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ApplicationUser_Provider");
-
                 entity.HasOne(d => d.UserStatus)
                     .WithMany(p => p.ApplicationUsers)
                     .HasForeignKey(d => d.UserStatusId)
@@ -81,10 +78,18 @@ namespace Portal.Models
                 entity.Property(e => e.Path)
                     .IsRequired()
                     .HasMaxLength(3000);
+
+                entity.HasOne(d => d.View)
+                    .WithMany(p => p.Pages)
+                    .HasForeignKey(d => d.ViewId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Page_View");
             });
 
             modelBuilder.Entity<PermissionDAO>(entity =>
             {
+                entity.HasIndex(e => e.RoleId);
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(500);
@@ -98,13 +103,17 @@ namespace Portal.Models
 
             modelBuilder.Entity<PermissionDataDAO>(entity =>
             {
+                entity.HasIndex(e => e.PermissionId);
+
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.FilterName).HasMaxLength(500);
+                entity.Property(e => e.Value).HasMaxLength(3000);
 
-                entity.Property(e => e.FilterType).HasMaxLength(500);
-
-                entity.Property(e => e.FilterValue).HasMaxLength(3000);
+                entity.HasOne(d => d.PermissionField)
+                    .WithMany(p => p.PermissionDatas)
+                    .HasForeignKey(d => d.PermissionFieldId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PermissionData_PermissionField");
 
                 entity.HasOne(d => d.Permission)
                     .WithMany(p => p.PermissionDatas)
@@ -113,10 +122,29 @@ namespace Portal.Models
                     .HasConstraintName("FK_PermissionData_Permission");
             });
 
+            modelBuilder.Entity<PermissionFieldDAO>(entity =>
+            {
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.HasOne(d => d.View)
+                    .WithMany(p => p.PermissionFields)
+                    .HasForeignKey(d => d.ViewId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PermissionField_View");
+            });
+
             modelBuilder.Entity<PermissionPageMappingDAO>(entity =>
             {
                 entity.HasKey(e => new { e.PermissionId, e.PageId })
                     .HasName("PK_PermissionAction");
+
+                entity.HasIndex(e => e.PageId);
 
                 entity.HasOne(d => d.Page)
                     .WithMany(p => p.PermissionPageMappings)
@@ -133,26 +161,25 @@ namespace Portal.Models
 
             modelBuilder.Entity<ProviderDAO>(entity =>
             {
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(500);
-
-                entity.Property(e => e.Value).HasMaxLength(3000);
-
-                entity.HasOne(d => d.ProviderType)
-                    .WithMany(p => p.Providers)
-                    .HasForeignKey(d => d.ProviderTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Provider_ProviderType");
-            });
-
-            modelBuilder.Entity<ProviderTypeDAO>(entity =>
-            {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(500);
+                entity.Property(e => e.ADIP).HasMaxLength(500);
+
+                entity.Property(e => e.ADPassword).HasMaxLength(500);
+
+                entity.Property(e => e.ADUsername).HasMaxLength(500);
+
+                entity.Property(e => e.GoogleClientId).HasMaxLength(500);
+
+                entity.Property(e => e.GoogleClientSecret).HasMaxLength(500);
+
+                entity.Property(e => e.GoogleRedirectUri).HasMaxLength(3000);
+
+                entity.Property(e => e.MicrosoftClientId).HasMaxLength(500);
+
+                entity.Property(e => e.MicrosoftClientSecret).HasMaxLength(500);
+
+                entity.Property(e => e.MicrosoftRedirectUri).HasMaxLength(3000);
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -185,6 +212,8 @@ namespace Portal.Models
             {
                 entity.HasKey(e => new { e.ApplicationUserId, e.RoleId });
 
+                entity.HasIndex(e => e.RoleId);
+
                 entity.HasOne(d => d.ApplicationUser)
                     .WithMany(p => p.UserRoleMappings)
                     .HasForeignKey(d => d.ApplicationUserId)
@@ -209,6 +238,13 @@ namespace Portal.Models
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(500);
+            });
+
+            modelBuilder.Entity<ViewDAO>(entity =>
+            {
+                entity.Property(e => e.Name).HasMaxLength(3000);
+
+                entity.Property(e => e.Path).HasMaxLength(3000);
             });
 
             OnModelCreatingExt(modelBuilder);

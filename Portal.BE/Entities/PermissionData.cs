@@ -10,10 +10,10 @@ namespace Portal.Entities
     {
         public long Id { get; set; }
         public long PermissionId { get; set; }
-        public string FilterName { get; set; }
-        public string FilterType { get; set; }
-        public string FilterValue { get; set; }
+        public long PermissionFieldId { get; set; }
+        public string Value { get; set; }
         public Permission Permission { get; set; }
+        public PermissionField PermissionField { get; set; }
 
         public bool Equals(PermissionData other)
         {
@@ -29,9 +29,8 @@ namespace Portal.Entities
     {
         public IdFilter Id { get; set; }
         public IdFilter PermissionId { get; set; }
-        public StringFilter FilterName { get; set; }
-        public StringFilter FilterType { get; set; }
-        public StringFilter FilterValue { get; set; }
+        public IdFilter PermissionFieldId { get; set; }
+        public StringFilter Value { get; set; }
         public List<PermissionDataFilter> OrFilter { get; set; }
         public PermissionDataOrder OrderBy {get; set;}
         public PermissionDataSelect Selects {get; set;}
@@ -42,9 +41,8 @@ namespace Portal.Entities
     {
         Id = 1,
         Permission = 2,
-        FilterName = 3,
-        FilterType = 4,
-        FilterValue = 5,
+        PermissionField = 3,
+        Value = 4,
     }
 
     [Flags]
@@ -53,8 +51,7 @@ namespace Portal.Entities
         ALL = E.ALL,
         Id = E._1,
         Permission = E._2,
-        FilterName = E._3,
-        FilterType = E._4,
-        FilterValue = E._5,
+        PermissionField = E._3,
+        Value = E._4,
     }
 }

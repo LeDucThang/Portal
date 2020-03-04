@@ -15,8 +15,9 @@ namespace Portal.Controllers.site
 {
     public class SiteRoute : Root
     {
-        public const string FE = "/site";
-        private const string Default = Base + FE;
+        public const string Master = Module + "/site/site-master";
+        public const string Detail = Module + "/site/site-detail";
+        private const string Default = Rpc + Module + "/site";
         public const string Count = Default + "/count";
         public const string List = Default + "/list";
         public const string Get = Default + "/get";
@@ -26,8 +27,15 @@ namespace Portal.Controllers.site
         public const string Import = Default + "/import";
         public const string Export = Default + "/export";
 
+        public static Dictionary<string, FieldType> Filters = new Dictionary<string, FieldType>
+        {
+            { nameof(Site.Id), FieldType.ID },
+            { nameof(Site.Name), FieldType.STRING },
+            { nameof(Site.URL), FieldType.STRING },
+            { nameof(Site.Status), FieldType.LONG },
+        };
     }
-    
+
     public class SiteController : ApiController
     {
         
@@ -128,7 +136,7 @@ namespace Portal.Controllers.site
             List<Site> Sites = await SiteService.List(SiteFilter);
             return Sites.Select(c => new Site_SiteDTO(c)).ToList();
         }
-        
+
         [Route(SiteRoute.Export), HttpPost]
         public async Task<List<Site_SiteDTO>> Export([FromBody] Site_SiteFilterDTO Site_SiteFilterDTO)
         {
@@ -147,7 +155,7 @@ namespace Portal.Controllers.site
             Site.Name = Site_SiteDTO.Name;
             Site.URL = Site_SiteDTO.URL;
             Site.Status = Site_SiteDTO.Status;
-            
+
             return Site;
         }
 

@@ -13,8 +13,10 @@ namespace Portal.Models
         public long Id { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
-        public long? ParentId { get; set; }
+        public long ViewId { get; set; }
+        public bool IsDeleted { get; set; }
 
+        public virtual ViewDAO View { get; set; }
         public virtual ICollection<PermissionPageMappingDAO> PermissionPageMappings { get; set; }
     }
 }

@@ -199,7 +199,8 @@ namespace Portal.Services.MPage
                 int IdColumn = 0 + StartColumn;
                 int NameColumn = 1 + StartColumn;
                 int PathColumn = 2 + StartColumn;
-                int ParentIdColumn = 3 + StartColumn;
+                int ViewIdColumn = 3 + StartColumn;
+                int IsDeletedColumn = 4 + StartColumn;
                 for (int i = 1; i <= worksheet.Dimension.End.Row; i++)
                 {
                     if (string.IsNullOrEmpty(worksheet.Cells[i + StartRow, IdColumn].Value?.ToString()))
@@ -207,12 +208,13 @@ namespace Portal.Services.MPage
                     string IdValue = worksheet.Cells[i + StartRow, IdColumn].Value?.ToString();
                     string NameValue = worksheet.Cells[i + StartRow, NameColumn].Value?.ToString();
                     string PathValue = worksheet.Cells[i + StartRow, PathColumn].Value?.ToString();
-                    string ParentIdValue = worksheet.Cells[i + StartRow, ParentIdColumn].Value?.ToString();
+                    string ViewIdValue = worksheet.Cells[i + StartRow, ViewIdColumn].Value?.ToString();
+                    string IsDeletedValue = worksheet.Cells[i + StartRow, IsDeletedColumn].Value?.ToString();
                     Page Page = new Page();
                     Page.Id = long.TryParse(IdValue, out long Id) ? Id : 0;
                     Page.Name = NameValue;
                     Page.Path = PathValue;
-                    Page.ParentId = long.TryParse(ParentIdValue, out long ParentId) ? ParentId : 0;
+                    Page.ViewId = long.TryParse(ViewIdValue, out long ViewId) ? ViewId : 0;
                     Pages.Add(Page);
                 }
             }
@@ -258,12 +260,14 @@ namespace Portal.Services.MPage
                 int IdColumn = 0 + StartColumn;
                 int NameColumn = 1 + StartColumn;
                 int PathColumn = 2 + StartColumn;
-                int ParentIdColumn = 3 + StartColumn;
+                int ViewIdColumn = 3 + StartColumn;
+                int IsDeletedColumn = 4 + StartColumn;
                 
                 worksheet.Cells[1, IdColumn].Value = nameof(Page.Id);
                 worksheet.Cells[1, NameColumn].Value = nameof(Page.Name);
                 worksheet.Cells[1, PathColumn].Value = nameof(Page.Path);
-                worksheet.Cells[1, ParentIdColumn].Value = nameof(Page.ParentId);
+                worksheet.Cells[1, ViewIdColumn].Value = nameof(Page.ViewId);
+                worksheet.Cells[1, IsDeletedColumn].Value = nameof(Page.IsDeleted);
 
                 for(int i = 0; i < Pages.Count; i++)
                 {
@@ -271,7 +275,8 @@ namespace Portal.Services.MPage
                     worksheet.Cells[i + StartRow, IdColumn].Value = Page.Id;
                     worksheet.Cells[i + StartRow, NameColumn].Value = Page.Name;
                     worksheet.Cells[i + StartRow, PathColumn].Value = Page.Path;
-                    worksheet.Cells[i + StartRow, ParentIdColumn].Value = Page.ParentId;
+                    worksheet.Cells[i + StartRow, ViewIdColumn].Value = Page.ViewId;
+                    worksheet.Cells[i + StartRow, IsDeletedColumn].Value = Page.IsDeleted;
                 }
                 excelPackage.Save();
             }
@@ -297,8 +302,8 @@ namespace Portal.Services.MPage
                     subFilter.Name = Map(subFilter.Name, currentFilter.Value);
                 if (currentFilter.Value.Name == nameof(subFilter.Path))
                     subFilter.Path = Map(subFilter.Path, currentFilter.Value);
-                if (currentFilter.Value.Name == nameof(subFilter.ParentId))
-                    subFilter.ParentId = Map(subFilter.ParentId, currentFilter.Value);
+                if (currentFilter.Value.Name == nameof(subFilter.ViewId))
+                    subFilter.ViewId = Map(subFilter.ViewId, currentFilter.Value);
             }
             return filter;
         }

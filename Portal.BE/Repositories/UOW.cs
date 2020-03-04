@@ -16,11 +16,12 @@ namespace Portal.Repositories
         IPageRepository PageRepository { get; }
         IPermissionRepository PermissionRepository { get; }
         IPermissionDataRepository PermissionDataRepository { get; }
+        IPermissionFieldRepository PermissionFieldRepository { get; }
         IProviderRepository ProviderRepository { get; }
-        IProviderTypeRepository ProviderTypeRepository { get; }
         IRoleRepository RoleRepository { get; }
         ISiteRepository SiteRepository { get; }
         IUserStatusRepository UserStatusRepository { get; }
+        IViewRepository ViewRepository { get; }
     }
 
     public class UOW : IUOW
@@ -31,11 +32,12 @@ namespace Portal.Repositories
         public IPageRepository PageRepository { get; private set; }
         public IPermissionRepository PermissionRepository { get; private set; }
         public IPermissionDataRepository PermissionDataRepository { get; private set; }
+        public IPermissionFieldRepository PermissionFieldRepository { get; private set; }
         public IProviderRepository ProviderRepository { get; private set; }
-        public IProviderTypeRepository ProviderTypeRepository { get; private set; }
         public IRoleRepository RoleRepository { get; private set; }
         public ISiteRepository SiteRepository { get; private set; }
         public IUserStatusRepository UserStatusRepository { get; private set; }
+        public IViewRepository ViewRepository { get; private set; }
 
         public UOW(DataContext DataContext)
         {
@@ -45,11 +47,12 @@ namespace Portal.Repositories
             PageRepository = new PageRepository(DataContext);
             PermissionRepository = new PermissionRepository(DataContext);
             PermissionDataRepository = new PermissionDataRepository(DataContext);
+            PermissionFieldRepository = new PermissionFieldRepository(DataContext);
             ProviderRepository = new ProviderRepository(DataContext);
-            ProviderTypeRepository = new ProviderTypeRepository(DataContext);
             RoleRepository = new RoleRepository(DataContext);
             SiteRepository = new SiteRepository(DataContext);
             UserStatusRepository = new UserStatusRepository(DataContext);
+            ViewRepository = new ViewRepository(DataContext);
         }
         public async Task Begin()
         {

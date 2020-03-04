@@ -8,15 +8,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Portal.Entities;
 using Portal.Services.MProvider;
-using Portal.Services.MProviderType;
+
 
 
 namespace Portal.Controllers.provider
 {
     public class ProviderRoute : Root
     {
-        public const string FE = "/provider";
-        private const string Default = Base + FE;
+        public const string Master = Module + "/provider/provider-master";
+        public const string Detail = Module + "/provider/provider-detail";
+        private const string Default = Rpc + Module + "/provider";
         public const string Count = Default + "/count";
         public const string List = Default + "/list";
         public const string Get = Default + "/get";
@@ -26,22 +27,32 @@ namespace Portal.Controllers.provider
         public const string Import = Default + "/import";
         public const string Export = Default + "/export";
 
-        public const string SingleListProviderType = Default + "/single-list-provider-type";
+        public static Dictionary<string, FieldType> Filters = new Dictionary<string, FieldType>
+        {
+            { nameof(Provider.Id), FieldType.ID },
+            { nameof(Provider.Name), FieldType.STRING },
+            { nameof(Provider.GoogleRedirectUri), FieldType.STRING },
+            { nameof(Provider.ADIP), FieldType.STRING },
+            { nameof(Provider.ADUsername), FieldType.STRING },
+            { nameof(Provider.ADPassword), FieldType.STRING },
+            { nameof(Provider.GoogleClientId), FieldType.ID },
+            { nameof(Provider.GoogleClientSecret), FieldType.STRING },
+            { nameof(Provider.MicrosoftClientId), FieldType.ID },
+            { nameof(Provider.MicrosoftClientSecret), FieldType.STRING },
+            { nameof(Provider.MicrosoftRedirectUri), FieldType.STRING },
+        };
     }
-    
+
     public class ProviderController : ApiController
     {
-        private IProviderTypeService ProviderTypeService;
         
         private IProviderService ProviderService;
 
         public ProviderController(
-            IProviderTypeService ProviderTypeService,
             
             IProviderService ProviderService
         )
         {
-            this.ProviderTypeService = ProviderTypeService;
             
             this.ProviderService = ProviderService;
         }
@@ -132,7 +143,7 @@ namespace Portal.Controllers.provider
             List<Provider> Providers = await ProviderService.List(ProviderFilter);
             return Providers.Select(c => new Provider_ProviderDTO(c)).ToList();
         }
-        
+
         [Route(ProviderRoute.Export), HttpPost]
         public async Task<List<Provider_ProviderDTO>> Export([FromBody] Provider_ProviderFilterDTO Provider_ProviderFilterDTO)
         {
@@ -149,29 +160,16 @@ namespace Portal.Controllers.provider
             Provider Provider = new Provider();
             Provider.Id = Provider_ProviderDTO.Id;
             Provider.Name = Provider_ProviderDTO.Name;
-            Provider.ProviderTypeId = Provider_ProviderDTO.ProviderTypeId;
-            Provider.Value = Provider_ProviderDTO.Value;
-            Provider.IsDefault = Provider_ProviderDTO.IsDefault;
-            Provider.ProviderType = Provider_ProviderDTO.ProviderType == null ? null : new ProviderType
-            {
-                Id = Provider_ProviderDTO.ProviderType.Id,
-                Code = Provider_ProviderDTO.ProviderType.Code,
-                Name = Provider_ProviderDTO.ProviderType.Name,
-            };
-            Provider.ApplicationUsers = Provider_ProviderDTO.ApplicationUsers?
-                .Select(x => new ApplicationUser
-                {
-                    Id = x.Id,
-                    Username = x.Username,
-                    Password = x.Password,
-                    DisplayName = x.DisplayName,
-                    Email = x.Email,
-                    Phone = x.Phone,
-                    UserStatusId = x.UserStatusId,
-                    RetryTime = x.RetryTime,
-                    ProviderId = x.ProviderId,
-                }).ToList();
-            
+            Provider.GoogleRedirectUri = Provider_ProviderDTO.GoogleRedirectUri;
+            Provider.ADIP = Provider_ProviderDTO.ADIP;
+            Provider.ADUsername = Provider_ProviderDTO.ADUsername;
+            Provider.ADPassword = Provider_ProviderDTO.ADPassword;
+            Provider.GoogleClientId = Provider_ProviderDTO.GoogleClientId;
+            Provider.GoogleClientSecret = Provider_ProviderDTO.GoogleClientSecret;
+            Provider.MicrosoftClientId = Provider_ProviderDTO.MicrosoftClientId;
+            Provider.MicrosoftClientSecret = Provider_ProviderDTO.MicrosoftClientSecret;
+            Provider.MicrosoftRedirectUri = Provider_ProviderDTO.MicrosoftRedirectUri;
+
             return Provider;
         }
 
@@ -186,30 +184,18 @@ namespace Portal.Controllers.provider
 
             ProviderFilter.Id = Provider_ProviderFilterDTO.Id;
             ProviderFilter.Name = Provider_ProviderFilterDTO.Name;
-            ProviderFilter.ProviderTypeId = Provider_ProviderFilterDTO.ProviderTypeId;
-            ProviderFilter.Value = Provider_ProviderFilterDTO.Value;
+            ProviderFilter.GoogleRedirectUri = Provider_ProviderFilterDTO.GoogleRedirectUri;
+            ProviderFilter.ADIP = Provider_ProviderFilterDTO.ADIP;
+            ProviderFilter.ADUsername = Provider_ProviderFilterDTO.ADUsername;
+            ProviderFilter.ADPassword = Provider_ProviderFilterDTO.ADPassword;
+            ProviderFilter.GoogleClientId = Provider_ProviderFilterDTO.GoogleClientId;
+            ProviderFilter.GoogleClientSecret = Provider_ProviderFilterDTO.GoogleClientSecret;
+            ProviderFilter.MicrosoftClientId = Provider_ProviderFilterDTO.MicrosoftClientId;
+            ProviderFilter.MicrosoftClientSecret = Provider_ProviderFilterDTO.MicrosoftClientSecret;
+            ProviderFilter.MicrosoftRedirectUri = Provider_ProviderFilterDTO.MicrosoftRedirectUri;
             return ProviderFilter;
         }
 
-        
-        [Route(ProviderRoute.SingleListProviderType), HttpPost]
-        public async Task<List<Provider_ProviderTypeDTO>> SingleListProviderType([FromBody] Provider_ProviderTypeFilterDTO Provider_ProviderTypeFilterDTO)
-        {
-            ProviderTypeFilter ProviderTypeFilter = new ProviderTypeFilter();
-            ProviderTypeFilter.Skip = 0;
-            ProviderTypeFilter.Take = 20;
-            ProviderTypeFilter.OrderBy = ProviderTypeOrder.Id;
-            ProviderTypeFilter.OrderType = OrderType.ASC;
-            ProviderTypeFilter.Selects = ProviderTypeSelect.ALL;
-            ProviderTypeFilter.Id = Provider_ProviderTypeFilterDTO.Id;
-            ProviderTypeFilter.Code = Provider_ProviderTypeFilterDTO.Code;
-            ProviderTypeFilter.Name = Provider_ProviderTypeFilterDTO.Name;
-
-            List<ProviderType> ProviderTypes = await ProviderTypeService.List(ProviderTypeFilter);
-            List<Provider_ProviderTypeDTO> Provider_ProviderTypeDTOs = ProviderTypes
-                .Select(x => new Provider_ProviderTypeDTO(x)).ToList();
-            return Provider_ProviderTypeDTOs;
-        }
         
 
     }

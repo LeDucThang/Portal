@@ -15,9 +15,6 @@ namespace Portal.Entities
         public string Email { get; set; }
         public string Phone { get; set; }
         public long UserStatusId { get; set; }
-        public long RetryTime { get; set; }
-        public long ProviderId { get; set; }
-        public Provider Provider { get; set; }
         public UserStatus UserStatus { get; set; }
         public List<Role> Roles { get; set; }
 
@@ -40,8 +37,6 @@ namespace Portal.Entities
         public StringFilter Email { get; set; }
         public StringFilter Phone { get; set; }
         public IdFilter UserStatusId { get; set; }
-        public LongFilter RetryTime { get; set; }
-        public IdFilter ProviderId { get; set; }
         public List<ApplicationUserFilter> OrFilter { get; set; }
         public ApplicationUserOrder OrderBy {get; set;}
         public ApplicationUserSelect Selects {get; set;}
@@ -57,8 +52,6 @@ namespace Portal.Entities
         Email = 5,
         Phone = 6,
         UserStatus = 7,
-        RetryTime = 8,
-        Provider = 9,
     }
 
     [Flags]
@@ -72,7 +65,5 @@ namespace Portal.Entities
         Email = E._5,
         Phone = E._6,
         UserStatus = E._7,
-        RetryTime = E._8,
-        Provider = E._9,
     }
 }

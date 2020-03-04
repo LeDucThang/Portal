@@ -47,10 +47,6 @@ namespace Portal.Repositories
                 query = query.Where(q => q.Phone, filter.Phone);
             if (filter.UserStatusId != null)
                 query = query.Where(q => q.UserStatusId, filter.UserStatusId);
-            if (filter.RetryTime != null)
-                query = query.Where(q => q.RetryTime, filter.RetryTime);
-            if (filter.ProviderId != null)
-                query = query.Where(q => q.ProviderId, filter.ProviderId);
             query = OrFilter(query, filter);
             return query;
         }
@@ -77,10 +73,6 @@ namespace Portal.Repositories
                     queryable = queryable.Where(q => q.Phone, filter.Phone);
                 if (filter.UserStatusId != null)
                     queryable = queryable.Where(q => q.UserStatusId, filter.UserStatusId);
-                if (filter.RetryTime != null)
-                    queryable = queryable.Where(q => q.RetryTime, filter.RetryTime);
-                if (filter.ProviderId != null)
-                    queryable = queryable.Where(q => q.ProviderId, filter.ProviderId);
                 initQuery = initQuery.Union(queryable);
             }
             return initQuery;
@@ -114,12 +106,6 @@ namespace Portal.Repositories
                         case ApplicationUserOrder.UserStatus:
                             query = query.OrderBy(q => q.UserStatusId);
                             break;
-                        case ApplicationUserOrder.RetryTime:
-                            query = query.OrderBy(q => q.RetryTime);
-                            break;
-                        case ApplicationUserOrder.Provider:
-                            query = query.OrderBy(q => q.ProviderId);
-                            break;
                     }
                     break;
                 case OrderType.DESC:
@@ -146,12 +132,6 @@ namespace Portal.Repositories
                         case ApplicationUserOrder.UserStatus:
                             query = query.OrderByDescending(q => q.UserStatusId);
                             break;
-                        case ApplicationUserOrder.RetryTime:
-                            query = query.OrderByDescending(q => q.RetryTime);
-                            break;
-                        case ApplicationUserOrder.Provider:
-                            query = query.OrderByDescending(q => q.ProviderId);
-                            break;
                     }
                     break;
             }
@@ -170,16 +150,6 @@ namespace Portal.Repositories
                 Email = filter.Selects.Contains(ApplicationUserSelect.Email) ? q.Email : default(string),
                 Phone = filter.Selects.Contains(ApplicationUserSelect.Phone) ? q.Phone : default(string),
                 UserStatusId = filter.Selects.Contains(ApplicationUserSelect.UserStatus) ? q.UserStatusId : default(long),
-                RetryTime = filter.Selects.Contains(ApplicationUserSelect.RetryTime) ? q.RetryTime : default(long),
-                ProviderId = filter.Selects.Contains(ApplicationUserSelect.Provider) ? q.ProviderId : default(long),
-                Provider = filter.Selects.Contains(ApplicationUserSelect.Provider) && q.Provider != null ? new Provider
-                {
-                    Id = q.Provider.Id,
-                    Name = q.Provider.Name,
-                    ProviderTypeId = q.Provider.ProviderTypeId,
-                    Value = q.Provider.Value,
-                    IsDefault = q.Provider.IsDefault,
-                } : null,
                 UserStatus = filter.Selects.Contains(ApplicationUserSelect.UserStatus) && q.UserStatus != null ? new UserStatus
                 {
                     Id = q.UserStatus.Id,
@@ -218,16 +188,6 @@ namespace Portal.Repositories
                 Email = x.Email,
                 Phone = x.Phone,
                 UserStatusId = x.UserStatusId,
-                RetryTime = x.RetryTime,
-                ProviderId = x.ProviderId,
-                Provider = x.Provider == null ? null : new Provider
-                {
-                    Id = x.Provider.Id,
-                    Name = x.Provider.Name,
-                    ProviderTypeId = x.Provider.ProviderTypeId,
-                    Value = x.Provider.Value,
-                    IsDefault = x.Provider.IsDefault,
-                },
                 UserStatus = x.UserStatus == null ? null : new UserStatus
                 {
                     Id = x.UserStatus.Id,
@@ -258,8 +218,6 @@ namespace Portal.Repositories
             ApplicationUserDAO.Email = ApplicationUser.Email;
             ApplicationUserDAO.Phone = ApplicationUser.Phone;
             ApplicationUserDAO.UserStatusId = ApplicationUser.UserStatusId;
-            ApplicationUserDAO.RetryTime = ApplicationUser.RetryTime;
-            ApplicationUserDAO.ProviderId = ApplicationUser.ProviderId;
             ApplicationUserDAO.CreatedAt = StaticParams.DateTimeNow;
             ApplicationUserDAO.UpdatedAt = StaticParams.DateTimeNow;
             DataContext.ApplicationUser.Add(ApplicationUserDAO);
@@ -281,8 +239,6 @@ namespace Portal.Repositories
             ApplicationUserDAO.Email = ApplicationUser.Email;
             ApplicationUserDAO.Phone = ApplicationUser.Phone;
             ApplicationUserDAO.UserStatusId = ApplicationUser.UserStatusId;
-            ApplicationUserDAO.RetryTime = ApplicationUser.RetryTime;
-            ApplicationUserDAO.ProviderId = ApplicationUser.ProviderId;
             ApplicationUserDAO.UpdatedAt = StaticParams.DateTimeNow;
             await DataContext.SaveChangesAsync();
             await SaveReference(ApplicationUser);
@@ -309,8 +265,6 @@ namespace Portal.Repositories
                 ApplicationUserDAO.Email = ApplicationUser.Email;
                 ApplicationUserDAO.Phone = ApplicationUser.Phone;
                 ApplicationUserDAO.UserStatusId = ApplicationUser.UserStatusId;
-                ApplicationUserDAO.RetryTime = ApplicationUser.RetryTime;
-                ApplicationUserDAO.ProviderId = ApplicationUser.ProviderId;
                 ApplicationUserDAO.CreatedAt = StaticParams.DateTimeNow;
                 ApplicationUserDAO.UpdatedAt = StaticParams.DateTimeNow;
                 ApplicationUserDAOs.Add(ApplicationUserDAO);

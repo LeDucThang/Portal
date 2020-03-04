@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Portal.Entities;
 using Portal.Services.MPage;
-
+using Portal.Services.MView;
 using Portal.Services.MPermission;
 
 
@@ -16,8 +16,9 @@ namespace Portal.Controllers.page
 {
     public class PageRoute : Root
     {
-        public const string FE = "/page";
-        private const string Default = Base + FE;
+        public const string Master = Module + "/page/page-master";
+        public const string Detail = Module + "/page/page-detail";
+        private const string Default = Rpc + Module + "/page";
         public const string Count = Default + "/count";
         public const string List = Default + "/list";
         public const string Get = Default + "/get";
@@ -27,24 +28,35 @@ namespace Portal.Controllers.page
         public const string Import = Default + "/import";
         public const string Export = Default + "/export";
 
+        public const string SingleListView = Default + "/single-list-view";
         public const string CountPermission = Default + "/count-permission";
         public const string ListPermission = Default + "/list-permission";
+        public static Dictionary<string, FieldType> Filters = new Dictionary<string, FieldType>
+        {
+            { nameof(Page.Id), FieldType.ID },
+            { nameof(Page.Name), FieldType.STRING },
+            { nameof(Page.Path), FieldType.STRING },
+            { nameof(Page.ViewId), FieldType.ID },
+        };
     }
-    
+
     public class PageController : ApiController
     {
+        private IViewService ViewService;
         
         private IPermissionService PermissionService;
         
         private IPageService PageService;
 
         public PageController(
+            IViewService ViewService,
             
             IPermissionService PermissionService,
             
             IPageService PageService
         )
         {
+            this.ViewService = ViewService;
             
             this.PermissionService = PermissionService;
             
@@ -137,7 +149,7 @@ namespace Portal.Controllers.page
             List<Page> Pages = await PageService.List(PageFilter);
             return Pages.Select(c => new Page_PageDTO(c)).ToList();
         }
-        
+
         [Route(PageRoute.Export), HttpPost]
         public async Task<List<Page_PageDTO>> Export([FromBody] Page_PageFilterDTO Page_PageFilterDTO)
         {
@@ -155,8 +167,16 @@ namespace Portal.Controllers.page
             Page.Id = Page_PageDTO.Id;
             Page.Name = Page_PageDTO.Name;
             Page.Path = Page_PageDTO.Path;
-            Page.ParentId = Page_PageDTO.ParentId;
-            
+            Page.ViewId = Page_PageDTO.ViewId;
+            Page.IsDeleted = Page_PageDTO.IsDeleted;
+            Page.View = Page_PageDTO.View == null ? null : new View
+            {
+                Id = Page_PageDTO.View.Id,
+                Name = Page_PageDTO.View.Name,
+                Path = Page_PageDTO.View.Path,
+                IsDeleted = Page_PageDTO.View.IsDeleted,
+            };
+
             return Page;
         }
 
@@ -172,10 +192,29 @@ namespace Portal.Controllers.page
             PageFilter.Id = Page_PageFilterDTO.Id;
             PageFilter.Name = Page_PageFilterDTO.Name;
             PageFilter.Path = Page_PageFilterDTO.Path;
-            PageFilter.ParentId = Page_PageFilterDTO.ParentId;
+            PageFilter.ViewId = Page_PageFilterDTO.ViewId;
             return PageFilter;
         }
 
+        
+        [Route(PageRoute.SingleListView), HttpPost]
+        public async Task<List<Page_ViewDTO>> SingleListView([FromBody] Page_ViewFilterDTO Page_ViewFilterDTO)
+        {
+            ViewFilter ViewFilter = new ViewFilter();
+            ViewFilter.Skip = 0;
+            ViewFilter.Take = 20;
+            ViewFilter.OrderBy = ViewOrder.Id;
+            ViewFilter.OrderType = OrderType.ASC;
+            ViewFilter.Selects = ViewSelect.ALL;
+            ViewFilter.Id = Page_ViewFilterDTO.Id;
+            ViewFilter.Name = Page_ViewFilterDTO.Name;
+            ViewFilter.Path = Page_ViewFilterDTO.Path;
+
+            List<View> Views = await ViewService.List(ViewFilter);
+            List<Page_ViewDTO> Page_ViewDTOs = Views
+                .Select(x => new Page_ViewDTO(x)).ToList();
+            return Page_ViewDTOs;
+        }
         
 
         [Route(PageRoute.CountPermission), HttpPost]
